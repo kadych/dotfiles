@@ -1,0 +1,24 @@
+# -*- coding: utf-8 -*-
+{% if test == '1' %}
+from unittest import TestCase
+from {{ func_name }} import *
+
+
+class Test{{ class_name }}(TestCase):
+    def test_{{ func_name }}(self):
+        pass
+{% else %}
+
+
+def main():
+    pass
+
+
+if __name__ == '__main__':
+    import sys
+    if sys.version_info[0] == 2:
+        if not sys.stdout.encoding:
+            import codecs
+            sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
+    main()
+{% endif %}

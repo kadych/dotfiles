@@ -1,0 +1,10 @@
+--langdef=plsql
+--langmap=plsql:.pkb.pks.pck.prc.fnc.trg
+--regex-plsql=/^[[:space:]]*(create[[:space:]]+)?(or[[:space:]]+replace[[:space:]]+)?type[[:space:]]+([a-zA-Z0-9_@.]+)[[:space:]]+is[[:space:]]+(table|record|varray|object)/\3/r,record/i
+--regex-plsql=/^[[:space:]]*(create[[:space:]]+)?(or[[:space:]]+replace[[:space:]]+)?function[[:space:]]+([a-zA-Z0-9_@.]+)/\3/f,function/i
+--regex-plsql=/^[[:space:]]*(create[[:space:]]+)?(or[[:space:]]+replace[[:space:]]+)?procedure[[:space:]]+([a-zA-Z0-9_@.]+)/\3/p,procedure/i
+--regex-plsql=/^[[:space:]]*([a-zA-Z0-9_@.]+)[[:space:]]+constant[[:space:]]+/\1/c,constant/i
+--regex-plsql=/^[[:space:]]*create[[:space:]]+(or[[:space:]]+replace[[:space:]]+)?package[[:space:]]+([a-zA-Z0-9_@.]+)[[:space:]]+(is|as)/\2/S,package/i
+--regex-plsql=/^[[:space:]]*create[[:space:]]+(or[[:space:]]+replace[[:space:]]+)?package[[:space:]]+body[[:space:]]+([a-zA-Z0-9_@.]+)[[:space:]]+(is|as)/\2/B,package_body/i
+--regex-plsql=/^[[:space:]]*create[[:space:]]+(or[[:space:]]+replace[[:space:]]+)?trigger[[:space:]]+([a-zA-Z0-9_@.]+)/\2/t,trigger/i
+

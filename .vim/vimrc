@@ -1,0 +1,581 @@
+" vim: set sw=2 sts=2 ts=2 ff=unix et:
+let g:vundle_bundle='~/.vundle'
+set nocompatible
+
+filetype off
+execute 'set rtp+='.g:vundle_bundle.'/Vundle.vim'
+call vundle#begin(g:vundle_bundle)
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'mileszs/ack.vim.git'
+Plugin 'kien/ctrlp.vim.git'
+Plugin 'scrooloose/syntastic.git'
+Plugin 'majutsushi/tagbar.git'
+Plugin 'bling/vim-airline.git'
+Plugin 'guns/vim-clojure-static.git'
+Plugin 'tpope/vim-commentary.git'
+Plugin 'tpope/vim-fireplace.git'
+Plugin 'tpope/vim-fugitive.git'
+Plugin 'tpope/vim-obsession.git'
+Plugin 'jmcantrell/vim-virtualenv.git'
+Plugin 'SirVer/ultisnips.git'
+Plugin 'kadych/vim-java'
+Plugin 'kadych/vim-python'
+Plugin 'kadych/vim-xoria256'
+Plugin 'nanotech/jellybeans.vim.git'
+call vundle#end()
+filetype plugin indent on
+" ------------------------------------------------------
+" Basic Settings ---------------------------------------
+set tabstop=4 " number of spaces that a <tab> in the file counts for
+set shiftwidth=4 " number of spaces to use for each step of (auto)indent
+set softtabstop=4 " number of spaces that a <tab> counts for editing operations
+set smarttab " <tab> inf front of a line inserts blanks according to 'shiftwidth'
+set expandtab " use the appropriate number of spaces to insert a <tab>
+set autoindent " copy indent from current line when starting a new line
+set complete=.,k,b,t " scpecifies how keyworkd completion 'ins-completions' works
+" . - scan the current buffer
+" k - scan files given with the 'dictionary' option
+" b - scan other loaded buffers that are in the buffer list
+" t - tag completion
+set completeopt=menu,preview,longest " list of options for Insert mode completion
+" menu    - use a popup menu to show the possible completions
+" preview - show extra information about the current selected completion
+" longest - only insert the longest common text of the matches
+set number " print the line number in front of each line
+set clipboard=unnamed " will use the clipboard register '*' for all yank
+set t_vb= " visual bell off
+set backspace=indent,eol,start " influences the working of <bs>,<del>,<ctrl-w>
+" indent - allow backspacing over autoindent
+" eol    - allow backspacing over line breaks (join lines)
+" start  - allow backspacing over the start of insert
+set whichwrap=b,s,<,>,[,] " allow specified keys that move the cursor to move the line
+set nowrap " won't wrap long lines, it doesn't change the text in the buffer
+set linebreak " will wrap long lines at a charcter in 'breakat'
+set noswapfile " don't use a swapfile for the buffer
+set cinoptions=:0,g0,c4,C1,t0,u1,U1,(s,m1 " affects the way 'cindent' reindents lines in a c program
+set guioptions=gci " describes what components and options of the gui should be used
+" g - make menu items that are not active grey
+" c - use console dialogs instead of popp dialogs for simple choices
+" i - use vim icon
+set cursorline " highlight the screen line
+set laststatus=2 " always show a status line
+set ruler " show the line and column number of the cursor position
+set rulerformat=%=%m[%l:%c][%p%%] " determines the content of the ruler string
+set titlestring=%F\ -\ VIM " it will be used for the title of the window
+set incsearch " while typing a search command, show where the pattern, matches
+set ignorecase " ignore case in search patterns
+set history=200 " a history of ':' commands, and a history of previous search patterns
+set keymap=russian-jcukenwin " name of a keyboard mapping
+set iminsert=0 " neither :lmap nor IM will be used in insert mode
+set imsearch=0 " neither :lmap nor IM will be used when entering a search pattern
+set encoding=utf-8 " sets the character encoding used inside vim
+set fileencodings=utf-8,cp1251,ucs-2le " a list of encodings considered when starting to edit an existing file
+set grepprg=ack\ --nogroup\ --column\ $* " program to use for the :grep command
+set grepformat=%f:%l:%m " format to recognize for the ':grep' command output
+set errorformat+=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
+" scanf-like description of the format for the lines in the error file
+set printoptions=number:y,syntax:n " recognize the format of the output of ':hardcopy'
+" number:y - inlude line numbers in the printed output
+" syntax:n - do not use syntax highlighting
+
+if !exists('g:loaded_vimrc')
+  winpos 0 0 " put the gui vim window at the given coordinates
+  set lines=43 " number of lines of the vim window
+  set columns=87 " number of columns of the screen
+  set hlsearch " when there is a previous search pattern, highlight all its matches
+endif
+
+syntax on " switches on syntax highlighting
+
+" compiler! maven
+if exists('+undodir')
+  set undodir=~/.undo " list of directory names for undo files
+endif
+
+if exists('+undofile')
+  set undofile " saves undo history to an undo file when writing a buffer to a file
+endif
+
+if has("gui_running")
+  if has("win32")
+    set guifont=Consolas:h11:cRUSSIAN
+    set printfont=Consolas:h10:cRUSSIAN
+  elseif has("unix")
+    set guifont=Liberation\ Mono\ 10
+    set printfont=Liberation\ Mono\ 9
+  endif
+endif
+
+if has('gui_running')
+  colorscheme xoria256
+elseif has('unix')
+  colorscheme jellybeans
+endif
+" let &t_Co=256
+
+if has('unix')
+  execute 'set <m-j>=\ej'
+  execute 'set <m-k>=\ek'
+endif
+" ------------------------------------------------------
+" Plugin Variables -------------------------------------
+let g:user='Kirill Dunaev'
+let mapleader=','
+let fileencoding=&enc
+let termencoding=&enc
+let python_highlight_all=1
+let pascal_pascal=1
+let g:airline_detect_iminsert=1
+
+let g:qfix_height=10
+let g:XkbSwitchEnabled=1
+let g:XkbSwitchIMappings=['ru']
+
+let g:session_autoload='no'
+let g:session_autosave='yes'
+let g:session_autosave_periodic=10
+let g:session_verbose_messages=0
+let g:session_directory='~/.sessions'
+
+let g:indentLine_fileType=['python', 'java', 'groovy', 'c', 'cpp', 'xml']
+
+let groovy_allow_cpp_keywords=0
+
+let g:tagbar_width=30
+let g:tagbar_left=1
+let g:tagbar_type_plsql={
+      \ "ctagstype": "plsql",
+      \ "kinds": [
+      \ "c:constants",
+      \ "r:records",
+      \ "f:functions",
+      \ "p:procedures"
+      \],
+      \ "sort": 0
+      \}
+
+let g:toggleMenuLines=&lines
+
+let g:syntastic_mode_map={
+      \ "mode": "passive",
+      \ "active_filetypes": [],
+      \ "passive_filetypes": ['python']
+      \}
+let g:syntastic_enable_highlighting=0
+let g:syntastic_always_populate_loc_list = 1
+
+let g:jedi#popup_on_dot = 0
+" let g:jedi#show_call_signatures = 2
+"
+let g:vimfiles_directory='~/.vim'
+let g:file_separator='/'
+let g:path_separator=':'
+if has("win32")
+  let g:vimfiles_directory='~/vimfiles'
+  let g:file_separator='\'
+  let g:path_separator=';'
+endif
+
+let g:pymode_python = 'python3'
+let g:pymode_folding = 0
+let g:pymode_doc = 0
+
+if has('win32')
+  let g:virtualenv_directory = 'D:/projects'
+endif
+
+" let g:neocomplete#enable_at_startup = 1
+"
+if has('win32')
+  let $PATH=$PATH.';D:/tools/git/cmd'
+endif
+
+if $GREP_OPTIONS == ''
+  let $GREP_OPTIONS='
+    \ --exclude-dir=.git
+    \ --exclude-dir=.gradle
+    \ --exclude-dir=.hg
+    \ --exclude-dir=.idea
+    \ --exclude-dir=.svn
+    \ --exclude-dir=build
+    \ --exclude-dir=out
+    \ --exclude-dir=target
+    \ --exclude=tags
+    \'
+endif
+let g:ackprg = 'ag --vimgrep'
+" ------------------------------------------------------
+" Autocommands -----------------------------------------
+augroup programming
+  autocmd!
+  autocmd VimEnter * call MakeFolders()
+  autocmd WinEnter * setlocal cursorline
+  autocmd WinLeave * setlocal nocursorline
+  autocmd BufReadPost * execute "normal! `\"zz"
+
+  autocmd FileType lua nmap <buffer> <s-f8> :luafile %<cr>
+
+  autocmd FileType go setlocal makeprg=go\ run\ %
+  autocmd FileType go nmap <buffer> <f7> :make<cr>
+  autocmd FileType go nmap <buffer> <f7> <Plug>(go-build)
+  autocmd FileType go nmap <buffer> <s-f8> <Plug>(go-run)
+
+  autocmd FileType cpp,cpp11 setlocal noignorecase
+  autocmd FileType cpp,cpp11 setlocal makeprg=scons
+  autocmd FileType cpp,cpp11 nmap <buffer> <f7> :make<cr>
+  autocmd FileType cpp,cpp11 nmap <buffer> <s-f8> :!scons run<cr>
+
+  autocmd FileType vim setlocal foldmethod=marker
+  " autocmd FileType vim setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
+  autocmd FileType vim nmap <buffer> <s-f8> :source %<cr>
+
+  autocmd FileType groovy nmap <buffer> <f7> :make<cr>
+
+  " autocmd FileType xml setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
+  " autocmd FileType text setlocal wrap
+  autocmd FileType text,help setlocal nonumber
+
+  autocmd BufEnter *.sql,*.pck,*.pkb,*.pks,*.trg,*.prc,*.fnc,*.vw setlocal filetype=plsql
+  autocmd FileType sql,plsql setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab ignorecase errorformat=%E%l/%c%m,%C%m,%Z
+
+  autocmd BufEnter *.pas,*.dpr,*.dpk setlocal filetype=pascal
+  " autocmd FileType pascal setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
+
+  " autocmd FileType htmldjango setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
+  autocmd BufWritePre *.py,*.js,*.cpp,*.h,*.java :call <sid>StripTrailingWhitespaces()
+
+  autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+  autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
+  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+
+  autocmd FileType python,jproperties setlocal commentstring=#\ %s
+  autocmd FileType c,cpp,cpp11,pascal,groovy,java setlocal commentstring=//\ %s
+  autocmd FileType javascript setlocal commentstring=/*\ %s\ */
+  autocmd FileType plsql setlocal commentstring=--\ %s
+  autocmd FileType dosbatch setlocal commentstring=REM\ %s
+  autocmd FileType htmldjango setlocal commentstring={#\ %s\ #}
+augroup END
+" ------------------------------------------------------
+" Mappings ---------------------------------------------
+nnoremap <c-l> :<c-u>nohlsearch<cr>
+inoremap <c-l> <esc>:<c-u>nohlsearch<cr>a
+" move current line downward
+nnoremap - ddp
+" move current line upward
+nnoremap _ ddkP
+" delete current line
+inoremap <c-d> <esc>ddi
+" uppercace current word
+inoremap <c-u> <esc>mqviwU`qa
+" open .vimrc file in vertical split
+nnoremap <leader>ve :belowright vsplit $MYVIMRC<cr>
+" execute .vimrc file
+nnoremap <leader>vs :source $MYVIMRC<cr>
+" disable ex mode
+nnoremap Q <nop>
+" goto begin of current line
+nnoremap H ^
+vnoremap H ^
+" goto end of current line
+nnoremap L $
+vnoremap L $
+" exit insert mode
+" inoremap <leader>q <esc>l
+" inoremap <esc> <esc>
+vnoremap Y "*Y
+nnoremap Y "*Y
+vnoremap P "*P
+nnoremap P "*P
+vnoremap y "*y
+nnoremap y "*y
+vnoremap p "*p
+nnoremap p "*p
+nnoremap <c-j> :bnext<cr>
+nnoremap <c-k> :bprevious<cr>
+" nnoremap <s-j> :tabnext<cr>
+" nnoremap <s-k> :tabprevious<cr>
+vnoremap <m-l> 5l
+nnoremap <m-l> 5l
+vnoremap <m-h> 5h
+nnoremap <m-h> 5h
+vnoremap <m-k> 5k
+nnoremap <m-k> 5k
+vnoremap <m-j> 5j
+nnoremap <m-j> 5j
+nnoremap <m-n> :Lnext<cr>
+nnoremap <m-p> :Lprev<cr>
+nnoremap <leader>wj :wincmd j<cr>
+nnoremap <leader>wk :wincmd k<cr>
+nnoremap <leader>wh :wincmd h<cr>
+nnoremap <leader>wl :wincmd l<cr>
+nnoremap <leader>wH :wincmd H<cr>
+nnoremap <leader>wL :wincmd L<cr>
+nnoremap <leader>we :wincmd =<cr>
+nnoremap <leader>wd :bdelete<cr>
+nnoremap <leader>wo :only<cr>
+nnoremap <leader>wc :quit<cr>
+nnoremap <leader>w, :wincmd p<cr>
+nnoremap <leader>wt :wincmd t<cr>
+nnoremap <leader>s :write<cr>
+nnoremap <leader>c :SyntasticCheck<cr>
+" nnoremap <leader>g :set operatorfunc=<sid>GrepOperator<cr>g@
+" vnoremap <leader>g :<c-u>call <sid>GrepOperator(visualmode())<cr>
+nnoremap <f1> :ToggleHelp<cr>
+nnoremap <f2> :TagbarToggle<cr>
+nnoremap <f3> :ToggleWindowCopy<cr>
+nnoremap <f4> :ToggleQuickFixWindow<cr>
+nnoremap <f9> :ToggleMenu<cr>
+nnoremap <leader>z :ToggleWindowSize<cr>
+nnoremap <m-=> :IncreaseFont<cr>
+nnoremap <m--> :DecreaseFont<cr>
+nnoremap <c-tab> gt
+" ------------------------------------------------------
+" Abbreviations ----------------------------------------
+" augroup abbreviations
+"   autocmd!
+"   autocmd FileType java iabbrev <buffer> sout System.out.println();<left><left>
+"   autocmd FileType java iabbrev <buffer> { {<cr><cr>}<up><bs>
+" augroup END
+" ------------------------------------------------------
+" User Defined Functions -------------------------------
+function! ChangeSpellLang()
+  if &spelllang =~ "en_us"
+    setlocal spell spelllang=ru
+    echo "spelling: ru"
+  elseif &spelllang =~ "ru"
+    setlocal spell spelllang=
+    setlocal nospell
+    echo "spelling: off"
+  else
+    setlocal spell spelllang=en_us
+    echo "spelling: en"
+  endif
+endfunction
+
+function! FindHelpWindow()
+  let buflist = []
+  for i in range(tabpagenr('$'))
+    let buflist = tabpagebuflist(i + 1)
+    for j in range(len(buflist))
+      let help_bufname = bufname(buflist[j])
+      if match(help_bufname, '[\\/]doc[\\/].\+\.txt$') != -1
+        return [i + 1, j + 1]
+      endif
+    endfor
+  endfor
+  return [1, -1]
+endfunction
+
+function! ToggleHelp()
+  let nr = FindHelpWindow()
+  if nr[1] != -1
+    execute 'tabn '.nr[0]
+    execute nr[1].'wincmd w'
+  else
+    tab help
+  endif
+endfunction
+command! ToggleHelp call ToggleHelp()
+
+function! ToggleWindowSize()
+  if has('win32') && has('gui_running')
+    let libvimuser=$VIMRUNTIME.'/libvimuser.dll'
+    let result=libcall(libvimuser, 'show_window', v:windowid)
+    wincmd =
+  elseif has('unix') && has('gui_running')
+    silent execute '!wmctrl -i -b toggle,maximized_horz,maximized_vert -r '.v:windowid
+  endif
+endfunction
+command! ToggleWindowSize call ToggleWindowSize()
+
+function! ToggleMenu()
+  if stridx(&guioptions, 'm') != -1
+    set guioptions-=m
+    let &lines = g:toggleMenuLines
+  else
+    let g:toggleMenuLines = &lines
+    set guioptions+=m
+  endif
+endfunction
+command! ToggleMenu call ToggleMenu()
+
+function! ToggleWindowCopy()
+  if winnr('$') > 1
+    wincmd o
+  elseif bufname('%') != ''
+    vsplit %
+    silent! normal! `.
+  endif
+endfunction
+command! ToggleWindowCopy call ToggleWindowCopy()
+
+function! CheckFileEncoding()
+  if exists('b:fenc_at_read') && &fileencoding != b:fenc_at_read
+    exec 'e! ++enc=' . &fileencoding
+    unlet b:fenc_at_read
+    exec 'syntax on'
+  endif
+endfunction
+
+function! <sid>StripTrailingWhitespaces()
+  " Preparation: save last search, and cursor position.
+  let _s=@/
+  let l = line(".")
+  let c = col(".")
+  " Do the business:
+  %s/\s\+$//e
+  " Clean up: restore previous search history, and cursor position
+  let @/=_s
+  call cursor(l, c)
+endfunction
+
+augroup ToggleQuickFixWindow
+ autocmd!
+ autocmd BufWinEnter quickfix let g:qfix_win = bufnr("$")
+ autocmd BufWinLeave * if exists("g:qfix_win") && expand("<abuf>") == g:qfix_win | unlet! g:qfix_win | endif
+augroup END
+
+function! ToggleQuickFixWindow(forced)
+  if exists("g:qfix_win") && a:forced == 0
+    cclose
+  else
+    execute "botright copen ".g:qfix_height
+  endif
+endfunction
+command! -bang -nargs=? ToggleQuickFixWindow call ToggleQuickFixWindow(<bang>0)
+
+function! Cmd(command)
+  echom iconv(system(a:command), "cp866", &enc)
+endfunction
+
+function! Lnext()
+  try
+    :lnext
+  catch
+    :ll
+  endtry
+endfunction
+command! Lnext call Lnext()
+
+function! Lprev()
+  try
+    :lprev
+  catch
+    :ll
+  endtry
+endfunction
+command! Lprev call Lprev()
+
+function! GetVirtualEnv()
+  let name = $VIRTUAL_ENV
+  if &filetype ==# 'python' && !empty(name)
+    return '['.fnamemodify(name, ':t').']'
+  else
+    return ''
+  endif
+endfunction
+
+function! GitHead()
+  let name = fugitive#head()
+  return empty(name) ? '' : '['.name.']'
+endfunction
+
+function! FileType()
+  let fileType = &filetype
+  return empty(fileType) ? '' : '['.fileType.']'
+endfunction
+
+function! FileFormat()
+  let fileFormat = &fileformat
+  if (has('win32') && fileFormat ==# 'dos')
+        \ || (has('unix') && fileFormat ==# 'unix')
+        \ || (has('mac') && fileFormat ==# 'mac')
+    let fileFormat = ''
+  endif
+  return empty(fileFormat) ? '' : '['.fileFormat.']'
+endfunction
+
+function! FileEncoding()
+  let fileEncoding = &fileencoding
+  if fileEncoding ==# 'utf-8'
+    let fileEncoding = ''
+  endif
+  return empty(fileEncoding) ? '' : '['.fileEncoding.']'
+endfunction
+
+function! MakeFolders()
+  if exists('+undodir')
+    let undo_directory = expand(&undodir)
+    if !isdirectory(undo_directory)
+      call mkdir(undo_directory)
+    endif
+  endif
+endfunction
+
+function! s:GrepOperator(type)
+  let unnamed_register = @@
+  if a:type ==# 'v'
+    normal! `<v`>y
+  elseif a:type ==# 'char'
+    normal! `[v`]y
+  else
+    return
+  endif
+  let pattern = @@
+  if &filetype ==# 'vim'
+    let pattern = escape(pattern, '#')
+  endif
+  silent execute "grep! ".shellescape(pattern)." ."
+  botright copen
+  let @@=unnamed_register
+endfunction
+
+function! s:IncreaseFont()
+  if has("gui_running")
+    if has("win32")
+      let font_seq = split(&guifont, ':')
+      if len(font_seq) > 1 && font_seq[1][0] ==? 'h'
+        let font_seq[1] = 'h'. (font_seq[1][1:] + 1)
+        let &guifont = join(font_seq, ':')
+      endif
+    endif
+  endif
+endfunction
+command! IncreaseFont call s:IncreaseFont()
+
+function! s:DecreaseFont()
+  if has("gui_running")
+    if has("win32")
+      let font_seq = split(&guifont, ':')
+      if len(font_seq) > 1 && font_seq[1][0] ==? 'h'
+        let font_seq[1] = 'h'. (font_seq[1][1:] - 1)
+        let &guifont = join(font_seq, ':')
+      endif
+    endif
+  endif
+endfunction
+command! DecreaseFont call s:DecreaseFont()
+" ------------------------------------------------------
+" Menu Definition --------------------------------------
+set wildmenu
+set wcm=<tab>
+menu Encoding.Read.utf-8 :e ++enc=utf8<cr>
+menu Encoding.Read.windows-1251 :e ++enc=cp1251<cr>
+menu Encoding.Read.koi8-r :e ++enc=koi8-r<cr>
+menu Encoding.Read.cp866 :e ++enc=cp866<cr>
+menu Encoding.Read.ucs-2le :e ++enc=ucs-2le<cr>
+set wildmenu
+set wcm=<tab>
+menu Encoding.Write.utf-8 :set fenc=utf8<cr>
+menu Encoding.Write.windows-1251 :set fenc=cp1251<cr>
+menu Encoding.Write.koi8-r :set fenc=koi8-r<cr>
+menu Encoding.Write.cp866 :set fenc=cp866<cr>
+menu Encoding.Write.ucs-2le :set fenc=ucs-2le<cr>
+set wildmenu
+set wcm=<tab>
+menu Encoding.End\ line\ format.unix :set fileformat=unix<cr>
+menu Encoding.End\ line\ format.dos :set fileformat=dos<cr>
+menu Encoding.End\ line\ format.mac :set fileformat=mac<cr>
+" ------------------------------------------------------
+let g:loaded_vimrc = 1
