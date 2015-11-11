@@ -79,9 +79,9 @@ set printoptions=number:y,syntax:n " recognize the format of the output of ':har
 " syntax:n - do not use syntax highlighting
 
 if !exists('g:loaded_vimrc')
-  winpos 0 0 " put the gui vim window at the given coordinates
-  set lines=43 " number of lines of the vim window
-  set columns=87 " number of columns of the screen
+  " winpos 0 0 " put the gui vim window at the given coordinates
+  set lines=35 " number of lines of the vim window
+  set columns=85 " number of columns of the screen
   set hlsearch " when there is a previous search pattern, highlight all its matches
 endif
 
