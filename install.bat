@@ -5,7 +5,7 @@ if _%GIT_CMD%_ == __ (
 if _%VIM_CMD%_ == __ (
   set VIM_CMD=vim
 )
-if _%VUNDLE_HOME% == __ (
+if _%VUNDLE_HOME%_ == __ (
     set VUNDLE_HOME=%USERPROFILE%\.vundle
 )
 set VUNDLE_REPO=https://github.com/VundleVim/Vundle.vim.git
