@@ -79,6 +79,7 @@ set printoptions=number:y,syntax:n " recognize the format of the output of ':har
 " syntax:n - do not use syntax highlighting
 set ttimeoutlen=50 " time in milliseconds that is waited for a key code or mapped key sequence to complete
 set cursorline " show cursor line
+set mouse=a " enable the use of the mouse
 
 if has('unix') && !has('nvim')
   set ttymouse=xterm2
@@ -262,6 +263,9 @@ augroup programming
   autocmd FileType plsql setlocal commentstring=--\ %s
   autocmd FileType dosbatch setlocal commentstring=REM\ %s
   autocmd FileType htmldjango setlocal commentstring={#\ %s\ #}
+
+  autocmd FileType help nnoremap <buffer> <c-j> <nop>
+  autocmd FileType help nnoremap <buffer> <c-k> <nop>
 augroup END
 " }}}
 " {{{ Mappings 
@@ -360,6 +364,7 @@ if exists(':terminal')
 endif
 " neovim yanking patch
 if has('nvim')
+  nnoremap yy ddu
   nnoremap y du
   vnoremap y du
 endif
@@ -370,7 +375,7 @@ augroup abbreviations
 "   autocmd FileType java iabbrev <buffer> sout System.out.println();<left><left>
 "   autocmd FileType java iabbrev <buffer> { {<cr><cr>}<up><bs>
 augroup END
-" " }}}
+" }}}
 " {{{ User Defined Functions
 function! ChangeSpellLang()
   if &spelllang =~ "en_us"
