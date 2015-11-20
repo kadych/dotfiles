@@ -10,11 +10,11 @@ if _%VUNDLE_HOME%_ == __ (
 )
 set VUNDLE_REPO=https://github.com/VundleVim/Vundle.vim.git
 if not exist "%USERPROFILE%\.vim" (
-    mklink /j "%USERPROFILE%\.vim" .vim
+    mklink /j "%USERPROFILE%\.vim" vim
     attrib +h /l "%USERPROFILE%\.vim"
 )
 if not exist "%USERPROFILE%\vimfiles" (
-    mklink /j "%USERPROFILE%\vimfiles" .vim
+    mklink /j "%USERPROFILE%\vimfiles" vim
     attrib +h /l "%USERPROFILE%\vimfiles"
 )
 if not exist "%VUNDLE_HOME%" (

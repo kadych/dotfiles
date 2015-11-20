@@ -1,4 +1,5 @@
 " vim: set sw=2 sts=2 ts=2 ff=unix et:
+" {{{ Plugin List
 let g:vundle_bundle='~/.vundle'
 set nocompatible
 
@@ -19,14 +20,14 @@ Plugin 'xolox/vim-misc.git'
 Plugin 'xolox/vim-session.git'
 Plugin 'jmcantrell/vim-virtualenv.git'
 Plugin 'SirVer/ultisnips.git'
-Plugin 'kadych/vim-java.git'
 Plugin 'kadych/vim-python.git'
+Plugin 'kadych/vim-java.git'
 Plugin 'kadych/vim-xoria256.git'
 Plugin 'nanotech/jellybeans.vim.git'
 call vundle#end()
 filetype plugin indent on
-" ------------------------------------------------------
-" Basic Settings ---------------------------------------
+" }}}
+" {{{ Basic Settings 
 set tabstop=4 " number of spaces that a <tab> in the file counts for
 set shiftwidth=4 " number of spaces to use for each step of (auto)indent
 set softtabstop=4 " number of spaces that a <tab> counts for editing operations
@@ -43,7 +44,7 @@ set completeopt=menu,preview,longest " list of options for Insert mode completio
 " preview - show extra information about the current selected completion
 " longest - only insert the longest common text of the matches
 set number " print the line number in front of each line
-set clipboard=unnamed " will use the clipboard register '*' for all yank
+set clipboard=unnamed,unnamedplus " will use the clipboard register '*' for all yank
 set t_vb= " visual bell off
 set backspace=indent,eol,start " influences the working of <bs>,<del>,<ctrl-w>
 " indent - allow backspacing over autoindent
@@ -68,7 +69,6 @@ set history=200 " a history of ':' commands, and a history of previous search pa
 set keymap=russian-jcukenwin " name of a keyboard mapping
 set iminsert=0 " neither :lmap nor IM will be used in insert mode
 set imsearch=0 " neither :lmap nor IM will be used when entering a search pattern
-set encoding=utf-8 " sets the character encoding used inside vim
 set fileencodings=utf-8,cp1251,ucs-2le " a list of encodings considered when starting to edit an existing file
 set grepprg=ack\ --nogroup\ --column\ $* " program to use for the :grep command
 set grepformat=%f:%l:%m " format to recognize for the ':grep' command output
@@ -77,9 +77,15 @@ set errorformat+=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 set printoptions=number:y,syntax:n " recognize the format of the output of ':hardcopy'
 " number:y - inlude line numbers in the printed output
 " syntax:n - do not use syntax highlighting
-set cursorline
+set ttimeoutlen=50 " time in milliseconds that is waited for a key code or mapped key sequence to complete
+set cursorline " show cursor line
 
-if !exists('g:loaded_vimrc')
+if has('unix') && !has('nvim')
+  set ttymouse=xterm2
+endif
+
+if !exists('g:loaded_vimrc') && has('gui_running')
+  set encoding=utf-8 " sets the character encoding used inside vim
   " winpos 0 0 " put the gui vim window at the given coordinates
   set lines=35 " number of lines of the vim window
   set columns=85 " number of columns of the screen
@@ -107,10 +113,8 @@ if has("gui_running")
   endif
 endif
 
-if has('gui_running')
+if has('gui_running') || has('unix')
   colorscheme xoria256
-elseif has('unix')
-  colorscheme jellybeans
 else
   colorscheme elflord
 endif
@@ -119,8 +123,8 @@ if has('unix')
   execute 'set <m-j>=\ej'
   execute 'set <m-k>=\ek'
 endif
-" ------------------------------------------------------
-" Plugin Variables -------------------------------------
+" }}}
+" {{{ Plugin Variables 
 let g:user='Kirill Dunaev'
 let mapleader=','
 let fileencoding=&enc
@@ -128,6 +132,7 @@ let termencoding=&enc
 let python_highlight_all=1
 let pascal_pascal=1
 let g:airline_detect_iminsert=1
+let g:airline#extensions#whitespace#enabled=0
 
 let g:qfix_height=10
 let g:XkbSwitchEnabled=1
@@ -142,7 +147,6 @@ let g:session_directory='~/.sessions'
 let g:indentLine_fileType=['python', 'java', 'groovy', 'c', 'cpp', 'xml']
 
 let g:UltiSnipsEditSplit='horizontal'
-let g:UltiSnipsUsePythonVersion=2
 
 let groovy_allow_cpp_keywords=0
 
@@ -159,7 +163,7 @@ let g:tagbar_type_plsql={
       \ "sort": 0
       \}
 
-let g:toggle_menu_lines=&lines
+let g:toggleMenuLines=&lines
 
 let g:syntastic_mode_map={
       \ "mode": "passive",
@@ -167,10 +171,10 @@ let g:syntastic_mode_map={
       \ "passive_filetypes": ['python']
       \}
 let g:syntastic_enable_highlighting=0
-let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_always_populate_loc_list=1
 
-let g:jedi#popup_on_dot = 0
-" let g:jedi#show_call_signatures = 2
+let g:jedi#popup_on_dot=0
+" let g:jedi#show_call_signatures=2
 "
 let g:vimfiles_directory='~/.vim'
 let g:file_separator='/'
@@ -181,9 +185,15 @@ if has("win32")
   let g:path_separator=';'
 endif
 
-let g:virtualenv_auto_activate=1
+let g:pymode_python='python3'
+let g:pymode_folding=0
+let g:pymode_doc=0
 
-" let g:neocomplete#enable_at_startup = 1
+if has('win32')
+  let g:virtualenv_directory='D:/projects'
+endif
+
+" let g:neocomplete#enable_at_startup=1
 "
 if has('win32')
   let $PATH=$PATH.';D:/tools/git/cmd'
@@ -202,9 +212,9 @@ if $GREP_OPTIONS == ''
     \ --exclude=tags
     \'
 endif
-let g:ackprg = 'ag --vimgrep'
-" ------------------------------------------------------
-" Autocommands -----------------------------------------
+let g:ackprg='ag --vimgrep'
+" }}}
+" {{{ Autocommands 
 augroup programming
   autocmd!
   autocmd VimEnter * call MakeFolders()
@@ -253,8 +263,9 @@ augroup programming
   autocmd FileType dosbatch setlocal commentstring=REM\ %s
   autocmd FileType htmldjango setlocal commentstring={#\ %s\ #}
 augroup END
-" ------------------------------------------------------
-" Mappings ---------------------------------------------
+" }}}
+" {{{ Mappings 
+" hide search highlighting
 nnoremap <c-l> :<c-u>nohlsearch<cr>
 inoremap <c-l> <esc>:<c-u>nohlsearch<cr>a
 " move current line downward
@@ -277,21 +288,19 @@ vnoremap H ^
 " goto end of current line
 nnoremap L $
 vnoremap L $
-" exit insert mode
-" inoremap <leader>q <esc>l
-" inoremap <esc> <esc>
-vnoremap Y "*Y
-nnoremap Y "*Y
-vnoremap P "*P
-nnoremap P "*P
-vnoremap y "*y
-nnoremap y "*y
-vnoremap p "*p
-nnoremap p "*p
+" yank and paste into the system clipboard
+vnoremap Y "+Y
+nnoremap Y "+Y
+vnoremap P "+P
+nnoremap P "+P
+vnoremap y "+y
+nnoremap y "+y
+vnoremap p "+p
+nnoremap p "+p
+" jump to the next/previous buffer
 nnoremap <c-j> :bnext<cr>
 nnoremap <c-k> :bprevious<cr>
-" nnoremap <s-j> :tabnext<cr>
-" nnoremap <s-k> :tabprevious<cr>
+" quick jumps through the text
 vnoremap <m-l> 5l
 nnoremap <m-l> 5l
 vnoremap <m-h> 5h
@@ -300,8 +309,15 @@ vnoremap <m-k> 5k
 nnoremap <m-k> 5k
 vnoremap <m-j> 5j
 nnoremap <m-j> 5j
+" unix terminal patch
+if has('unix')
+  execute "set <m-j>=\ej"
+  execute "set <m-k>=\ek"
+endi
+" goto next/previous error in the list
 nnoremap <m-n> :Lnext<cr>
 nnoremap <m-p> :Lprev<cr>
+" window manipulation hotkeys
 nnoremap <leader>wj :wincmd j<cr>
 nnoremap <leader>wk :wincmd k<cr>
 nnoremap <leader>wh :wincmd h<cr>
@@ -314,28 +330,48 @@ nnoremap <leader>wo :only<cr>
 nnoremap <leader>wc :quit<cr>
 nnoremap <leader>w, :wincmd p<cr>
 nnoremap <leader>wt :wincmd t<cr>
+" write current buffer
 nnoremap <leader>s :write<cr>
+" invoke syntax check
 nnoremap <leader>c :SyntasticCheck<cr>
-" nnoremap <leader>g :set operatorfunc=<sid>GrepOperator<cr>g@
-" vnoremap <leader>g :<c-u>call <sid>GrepOperator(visualmode())<cr>
+" show help window
 nnoremap <f1> :ToggleHelp<cr>
+" show/hide tarbar window
 nnoremap <f2> :TagbarToggle<cr>
+" open current buffer in additional window
 nnoremap <f3> :ToggleWindowCopy<cr>
+" show/hide quickfix window
 nnoremap <f4> :ToggleQuickFixWindow<cr>
+" show/hide gui menu
 nnoremap <f9> :ToggleMenu<cr>
+" maximize window size
 nnoremap <leader>z :ToggleWindowSize<cr>
+" increase editor font, works only in gui mode
 nnoremap <m-=> :IncreaseFont<cr>
+" decrease editor font
 nnoremap <m--> :DecreaseFont<cr>
-" nnoremap <c-tab> gt
-" ------------------------------------------------------
-" Abbreviations ----------------------------------------
-" augroup abbreviations
+" maps Esc to exit from terminal mode (NeoVim)
+if exists(':tnoremap')
+  tnoremap <esc> <c-\><c-n>
+endif
+" show terminal window (NeoVim)
+if exists(':terminal')
+  nnoremap <leader>wt :ToggleTerminal<cr>
+endif
+" neovim yanking patch
+if has('nvim')
+  nnoremap y du
+  vnoremap y du
+endif
+" }}}
+" {{{ Abbreviations
+augroup abbreviations
 "   autocmd!
 "   autocmd FileType java iabbrev <buffer> sout System.out.println();<left><left>
 "   autocmd FileType java iabbrev <buffer> { {<cr><cr>}<up><bs>
-" augroup END
-" ------------------------------------------------------
-" User Defined Functions -------------------------------
+augroup END
+" " }}}
+" {{{ User Defined Functions
 function! ChangeSpellLang()
   if &spelllang =~ "en_us"
     setlocal spell spelllang=ru
@@ -350,13 +386,13 @@ function! ChangeSpellLang()
   endif
 endfunction
 
-function! FindHelpWindow()
-  let buflist = []
+function! FindSpecialWindow(name_pattern)
+  let buflist=[]
   for i in range(tabpagenr('$'))
-    let buflist = tabpagebuflist(i + 1)
+    let buflist=tabpagebuflist(i + 1)
     for j in range(len(buflist))
-      let help_bufname = bufname(buflist[j])
-      if match(help_bufname, '[\\/]doc[\\/].\+\.txt$') != -1
+      let buffer_name=bufname(buflist[j])
+      if match(buffer_name, a:name_pattern) != -1
         return [i + 1, j + 1]
       endif
     endfor
@@ -364,8 +400,16 @@ function! FindHelpWindow()
   return [1, -1]
 endfunction
 
+function! FindHelpWindow()
+  return FindSpecialWindow('[\\/]doc[\\/].\+\.txt$')
+endfunction
+
+function! FindTerminalWindow()
+  return FindSpecialWindow('^term://')
+endfunction
+
 function! ToggleHelp()
-  let nr = FindHelpWindow()
+  let nr=FindHelpWindow()
   if nr[1] != -1
     execute 'tabn '.nr[0]
     execute nr[1].'wincmd w'
@@ -373,7 +417,16 @@ function! ToggleHelp()
     tab help
   endif
 endfunction
-command! ToggleHelp call ToggleHelp()
+
+function! ToggleTerminal()
+  let nr=FindTerminalWindow()
+  if nr[1] != -1
+    execute 'tabn '.nr[0]
+    execute nr[1].'wincmd w'
+  else
+    execute 'vsp term://bash'
+  endif
+endfunction
 
 function! ToggleWindowSize()
   if has('win32') && has('gui_running')
@@ -384,18 +437,16 @@ function! ToggleWindowSize()
     silent execute '!wmctrl -i -b toggle,maximized_horz,maximized_vert -r '.v:windowid
   endif
 endfunction
-command! ToggleWindowSize call ToggleWindowSize()
 
 function! ToggleMenu()
   if stridx(&guioptions, 'm') != -1
     set guioptions-=m
-    let &lines = g:toggle_menu_lines
+    let &lines=g:toggleMenuLines
   else
-    let g:toggle_menu_lines = &lines
+    let g:toggleMenuLines=&lines
     set guioptions+=m
   endif
 endfunction
-command! ToggleMenu call ToggleMenu()
 
 function! ToggleWindowCopy()
   if winnr('$') > 1
@@ -405,7 +456,6 @@ function! ToggleWindowCopy()
     silent! normal! `.
   endif
 endfunction
-command! ToggleWindowCopy call ToggleWindowCopy()
 
 function! CheckFileEncoding()
   if exists('b:fenc_at_read') && &fileencoding != b:fenc_at_read
@@ -418,8 +468,8 @@ endfunction
 function! <sid>StripTrailingWhitespaces()
   " Preparation: save last search, and cursor position.
   let _s=@/
-  let l = line(".")
-  let c = col(".")
+  let l=line(".")
+  let c=col(".")
   " Do the business:
   %s/\s\+$//e
   " Clean up: restore previous search history, and cursor position
@@ -429,7 +479,7 @@ endfunction
 
 augroup ToggleQuickFixWindow
  autocmd!
- autocmd BufWinEnter quickfix let g:qfix_win = bufnr("$")
+ autocmd BufWinEnter quickfix let g:qfix_win=bufnr("$")
  autocmd BufWinLeave * if exists("g:qfix_win") && expand("<abuf>") == g:qfix_win | unlet! g:qfix_win | endif
 augroup END
 
@@ -440,7 +490,6 @@ function! ToggleQuickFixWindow(forced)
     execute "botright copen ".g:qfix_height
   endif
 endfunction
-command! -bang -nargs=? ToggleQuickFixWindow call ToggleQuickFixWindow(<bang>0)
 
 function! Cmd(command)
   echom iconv(system(a:command), "cp866", &enc)
@@ -453,7 +502,6 @@ function! Lnext()
     :ll
   endtry
 endfunction
-command! Lnext call Lnext()
 
 function! Lprev()
   try
@@ -462,10 +510,9 @@ function! Lprev()
     :ll
   endtry
 endfunction
-command! Lprev call Lprev()
 
 function! GetVirtualEnv()
-  let name = $VIRTUAL_ENV
+  let name=$VIRTUAL_ENV
   if &filetype ==# 'python' && !empty(name)
     return '['.fnamemodify(name, ':t').']'
   else
@@ -474,36 +521,36 @@ function! GetVirtualEnv()
 endfunction
 
 function! GitHead()
-  let name = fugitive#head()
+  let name=fugitive#head()
   return empty(name) ? '' : '['.name.']'
 endfunction
 
 function! FileType()
-  let fileType = &filetype
+  let fileType=&filetype
   return empty(fileType) ? '' : '['.fileType.']'
 endfunction
 
 function! FileFormat()
-  let fileFormat = &fileformat
+  let fileFormat=&fileformat
   if (has('win32') && fileFormat ==# 'dos')
         \ || (has('unix') && fileFormat ==# 'unix')
         \ || (has('mac') && fileFormat ==# 'mac')
-    let fileFormat = ''
+    let fileFormat=''
   endif
   return empty(fileFormat) ? '' : '['.fileFormat.']'
 endfunction
 
 function! FileEncoding()
-  let fileEncoding = &fileencoding
+  let fileEncoding=&fileencoding
   if fileEncoding ==# 'utf-8'
-    let fileEncoding = ''
+    let fileEncoding=''
   endif
   return empty(fileEncoding) ? '' : '['.fileEncoding.']'
 endfunction
 
 function! MakeFolders()
   if exists('+undodir')
-    let undo_directory = expand(&undodir)
+    let undo_directory=expand(&undodir)
     if !isdirectory(undo_directory)
       call mkdir(undo_directory)
     endif
@@ -511,7 +558,7 @@ function! MakeFolders()
 endfunction
 
 function! s:GrepOperator(type)
-  let unnamed_register = @@
+  let unnamed_register=@@
   if a:type ==# 'v'
     normal! `<v`>y
   elseif a:type ==# 'char'
@@ -519,9 +566,9 @@ function! s:GrepOperator(type)
   else
     return
   endif
-  let pattern = @@
+  let pattern=@@
   if &filetype ==# 'vim'
-    let pattern = escape(pattern, '#')
+    let pattern=escape(pattern, '#')
   endif
   silent execute "grep! ".shellescape(pattern)." ."
   botright copen
@@ -531,30 +578,40 @@ endfunction
 function! s:IncreaseFont()
   if has("gui_running")
     if has("win32")
-      let font_seq = split(&guifont, ':')
+      let font_seq=split(&guifont, ':')
       if len(font_seq) > 1 && font_seq[1][0] ==? 'h'
-        let font_seq[1] = 'h'. (font_seq[1][1:] + 1)
-        let &guifont = join(font_seq, ':')
+        let font_seq[1]='h'. (font_seq[1][1:] + 1)
+        let &guifont=join(font_seq, ':')
       endif
     endif
   endif
 endfunction
-command! IncreaseFont call s:IncreaseFont()
 
 function! s:DecreaseFont()
   if has("gui_running")
     if has("win32")
-      let font_seq = split(&guifont, ':')
+      let font_seq=split(&guifont, ':')
       if len(font_seq) > 1 && font_seq[1][0] ==? 'h'
-        let font_seq[1] = 'h'. (font_seq[1][1:] - 1)
-        let &guifont = join(font_seq, ':')
+        let font_seq[1]='h'. (font_seq[1][1:] - 1)
+        let &guifont=join(font_seq, ':')
       endif
     endif
   endif
 endfunction
+" }}}
+" {{{ User Defined Commands
+command! -bang -nargs=? ToggleQuickFixWindow call ToggleQuickFixWindow(<bang>0)
+command! Lnext call Lnext()
+command! Lprev call Lprev()
+command! ToggleHelp call ToggleHelp()
+command! ToggleTerminal call ToggleTerminal()
+command! ToggleWindowSize call ToggleWindowSize()
+command! ToggleMenu call ToggleMenu()
+command! ToggleWindowCopy call ToggleWindowCopy()
+command! IncreaseFont call s:IncreaseFont()
 command! DecreaseFont call s:DecreaseFont()
-" ------------------------------------------------------
-" Menu Definition --------------------------------------
+" }}}
+" {{{ Menu Definition
 set wildmenu
 set wcm=<tab>
 menu Encoding.Read.utf-8 :e ++enc=utf8<cr>
@@ -574,5 +631,4 @@ set wcm=<tab>
 menu Encoding.End\ line\ format.unix :set fileformat=unix<cr>
 menu Encoding.End\ line\ format.dos :set fileformat=dos<cr>
 menu Encoding.End\ line\ format.mac :set fileformat=mac<cr>
-" ------------------------------------------------------
-let g:loaded_vimrc = 1
+" }}}
