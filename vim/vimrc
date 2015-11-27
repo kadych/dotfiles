@@ -371,7 +371,7 @@ if exists(':terminal')
   nnoremap <leader>wt :ToggleTerminal<cr>
 endif
 " neovim yanking patch
-if has('nvim')
+if has('nvim') && $SSH_CLIENT =~ ".207."
   nnoremap yy ddu
   nnoremap y du
   vnoremap y du
@@ -437,7 +437,7 @@ function! ToggleTerminal()
     execute 'tabn '.nr[0]
     execute nr[1].'wincmd w'
   else
-    execute 'vsp term://bash'
+    execute 'rightbelow vsplit term://bash'
   endif
 endfunction
 
