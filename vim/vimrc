@@ -115,10 +115,16 @@ if has("gui_running")
 endif
 
 if has('gui_running') || has('unix')
-  colorscheme xoria256
+  let g:colorscheme = 'xoria256'
 else
-  colorscheme elflord
+  let g:colorscheme = 'elflord'
 endif
+
+try
+  execute 'colorscheme '.g:colorscheme
+catch /Vim/
+  echomsg v:exception
+endtry
 
 if has('unix')
   execute 'set <m-j>=\ej'
