@@ -1,0 +1,26 @@
+directories:
+    - ~/.config/xfce4/terminal
+    - ~/.vundle
+
+commands:
+    - "git clone https://github.com/VundleVim/Vundle.vim.git ~/.vundle/Vundle.vim"
+
+link:
+    profile: ~/.profile
+    bashrc: ~/.bashrc
+    bash_logout: ~/.bash_logout
+    inputrc: ~/.inputrc
+    vim: ~/.vim
+    vim: ~/.config/nvim
+    vim/vimrc: ~/.config/nvim/init.vim
+    terminalrc: ~/.config/xfce4/terminal/terminalrc
+    accels.scm: ~/.config/xfce4/terminal/accels.scm
+    ackrc: ~/.ackrc
+    ctags.cnf: ~/.ctags
+    pylintrc: ~/.pylintrc
+    gitconfig: ~/.gitconfig
+    tmux.conf: ~/.tmux.conf
+    kdiff3rc: ~/.kdiff3rc
+    Xdefaults: ~/.Xdefaults
+    xinputrc: ~/.xinputrc
+    Xmodmap: ~/.Xmodmap

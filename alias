@@ -1,0 +1,2 @@
+alias ssh="TERM=xterm-256color LC_ALL=C ssh"
+

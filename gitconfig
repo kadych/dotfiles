@@ -1,3 +1,4 @@
+# vim: set ft=gitconfig :
 [color]
     ui = auto
     grep = auto
@@ -13,3 +14,6 @@
     new = 150
     old = 174
     commit = 180
+[user]
+    email = kirill.dunaev@gmail.com
+    name = Kirill Dunaev

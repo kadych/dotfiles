@@ -437,7 +437,11 @@ function! ToggleTerminal()
     execute 'tabn '.nr[0]
     execute nr[1].'wincmd w'
   else
-    execute 'rightbelow vsplit term://bash'
+    " execute 'rightbelow vsplit term://bash'
+    tabnew
+    terminal
+    " nnoremap <buffer> <c-j> <nop>
+    " nnoremap <buffer> <c-k> <nop>
   endif
 endfunction
 
@@ -446,8 +450,8 @@ function! ToggleWindowSize()
     let libvimuser=$VIMRUNTIME.'/libvimuser.dll'
     let result=libcall(libvimuser, 'show_window', v:windowid)
     wincmd =
-  elseif has('unix') && has('gui_running')
-    silent execute '!wmctrl -i -b toggle,maximized_horz,maximized_vert -r '.v:windowid
+  elseif has('unix')
+    silent execute '!wmctrl -r :ACTIVE: -b toggle,maximized_horz,maximized_vert'
   endif
 endfunction
 
