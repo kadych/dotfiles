@@ -44,7 +44,8 @@ set completeopt=menu,preview,longest " list of options for Insert mode completio
 " preview - show extra information about the current selected completion
 " longest - only insert the longest common text of the matches
 set number " print the line number in front of each line
-set clipboard=unnamed,unnamedplus " will use the clipboard register '*' for all yank
+set clipboard=unnamedplus " will use the clipboard register '*' for all yank
+" set clipboard=unnamed,unnamedplus " will use the clipboard register '*' for all yank
 set t_vb= " visual bell off
 set backspace=indent,eol,start " influences the working of <bs>,<del>,<ctrl-w>
 " indent - allow backspacing over autoindent
@@ -224,7 +225,7 @@ let g:ackprg='ag --vimgrep'
 " {{{ Autocommands 
 augroup programming
   autocmd!
-  autocmd VimEnter * call MakeFolders()
+  autocmd VimEnter * call s:make_folders()
   autocmd BufReadPost * execute "normal! `\"zz"
 
   autocmd FileType lua nmap <buffer> <s-f8> :luafile %<cr>
@@ -272,6 +273,9 @@ augroup programming
 
   autocmd FileType help nnoremap <buffer> <c-j> <nop>
   autocmd FileType help nnoremap <buffer> <c-k> <nop>
+
+  autocmd TermOpen * nnoremap <buffer> <c-j> <nop>
+  autocmd TermOpen * nnoremap <buffer> <c-k> <nop>
 augroup END
 augroup checktime
   au!
@@ -286,6 +290,7 @@ augroup END
 " hide search highlighting
 nnoremap <c-l> :<c-u>nohlsearch<cr>
 inoremap <c-l> <esc>:<c-u>nohlsearch<cr>a
+nnoremap <s-tab> gt
 " move current line downward
 nnoremap - ddp
 " move current line upward
@@ -295,7 +300,7 @@ inoremap <c-d> <esc>ddi
 " uppercace current word
 inoremap <c-u> <esc>mqviwU`qa
 " open .vimrc file in vertical split
-nnoremap <leader>ve :belowright vsplit $MYVIMRC<cr>
+nnoremap <leader>ve :edit $MYVIMRC<cr>
 " execute .vimrc file
 nnoremap <leader>vs :source $MYVIMRC<cr>
 " disable ex mode
@@ -307,17 +312,17 @@ vnoremap H ^
 nnoremap L $
 vnoremap L $
 " yank and paste into the system clipboard
-vnoremap Y "+Y
-nnoremap Y "+Y
-vnoremap P "+P
-nnoremap P "+P
-vnoremap y "+y
-nnoremap y "+y
-vnoremap p "+p
-nnoremap p "+p
+" vnoremap Y "+Y
+" nnoremap Y "+Y
+" vnoremap P "+P
+" nnoremap P "+P
+" vnoremap y "+y
+" nnoremap y "+y
+" vnoremap p "+p
+" nnoremap p "+p
 " jump to the next/previous buffer
-nnoremap <c-j> :bnext<cr>
-nnoremap <c-k> :bprevious<cr>
+nnoremap <c-j> :BufferNext<cr>
+nnoremap <c-k> :BufferPrev<cr>
 " quick jumps through the text
 vnoremap <m-l> 5l
 nnoremap <m-l> 5l
@@ -333,8 +338,8 @@ if has('unix')
   execute "set <m-k>=\ek"
 endi
 " goto next/previous error in the list
-nnoremap <m-n> :Lnext<cr>
-nnoremap <m-p> :Lprev<cr>
+nnoremap <m-n> :LocationNext<cr>
+nnoremap <m-p> :LocationPrev<cr>
 " window manipulation hotkeys
 nnoremap <leader>wj :wincmd j<cr>
 nnoremap <leader>wk :wincmd k<cr>
@@ -364,10 +369,11 @@ nnoremap <f4> :ToggleQuickFixWindow<cr>
 nnoremap <f9> :ToggleMenu<cr>
 " maximize window size
 nnoremap <leader>z :ToggleWindowSize<cr>
+nnoremap <leader>Z :call s:toggle_window_size(1)<cr>
 " increase editor font, works only in gui mode
-nnoremap <m-=> :IncreaseFont<cr>
+nnoremap <m-=> :FontIncrease<cr>
 " decrease editor font
-nnoremap <m--> :DecreaseFont<cr>
+nnoremap <m--> :FontDecrease<cr>
 " maps Esc to exit from terminal mode (NeoVim)
 if exists(':tnoremap')
   tnoremap <esc> <c-\><c-n>
@@ -377,11 +383,11 @@ if exists(':terminal')
   nnoremap <leader>wt :ToggleTerminal<cr>
 endif
 " neovim yanking patch
-if has('nvim') && $SSH_CLIENT =~ ".207."
-  nnoremap yy ddu
-  nnoremap y du
-  vnoremap y du
-endif
+" if has('nvim') && $SSH_CLIENT =~ ".207."
+"   nnoremap yy ddu
+"   nnoremap y du
+"   vnoremap y du
+" endif
 " }}}
 " {{{ Abbreviations
 augroup abbreviations
@@ -391,7 +397,7 @@ augroup abbreviations
 augroup END
 " }}}
 " {{{ User Defined Functions
-function! ChangeSpellLang()
+function! s:change_spell_lang()
   if &spelllang =~ "en_us"
     setlocal spell spelllang=ru
     echo "spelling: ru"
@@ -405,7 +411,7 @@ function! ChangeSpellLang()
   endif
 endfunction
 
-function! FindSpecialWindow(name_pattern)
+function! s:find_special_window(name_pattern)
   let buflist=[]
   for i in range(tabpagenr('$'))
     let buflist=tabpagebuflist(i + 1)
@@ -419,16 +425,16 @@ function! FindSpecialWindow(name_pattern)
   return [1, -1]
 endfunction
 
-function! FindHelpWindow()
-  return FindSpecialWindow('[\\/]doc[\\/].\+\.txt$')
+function! s:find_help_window()
+  return s:find_special_window('[\\/]doc[\\/].\+\.txt$')
 endfunction
 
-function! FindTerminalWindow()
-  return FindSpecialWindow('^term://')
+function! s:find_terminal_window()
+  return s:find_special_window('^term://')
 endfunction
 
-function! ToggleHelp()
-  let nr=FindHelpWindow()
+function! s:toggle_help()
+  let nr=s:find_help_window()
   if nr[1] != -1
     execute 'tabn '.nr[0]
     execute nr[1].'wincmd w'
@@ -437,8 +443,8 @@ function! ToggleHelp()
   endif
 endfunction
 
-function! ToggleTerminal()
-  let nr=FindTerminalWindow()
+function! s:toggle_terminal()
+  let nr=s:find_terminal_window()
   if nr[1] != -1
     execute 'tabn '.nr[0]
     execute nr[1].'wincmd w'
@@ -451,17 +457,21 @@ function! ToggleTerminal()
   endif
 endfunction
 
-function! ToggleWindowSize()
+function! s:toggle_window_size(fullscreen)
   if has('win32') && has('gui_running')
     let libvimuser=$VIMRUNTIME.'/libvimuser.dll'
     let result=libcall(libvimuser, 'show_window', v:windowid)
     wincmd =
   elseif has('unix')
-    silent execute '!wmctrl -r :ACTIVE: -b toggle,maximized_horz,maximized_vert'
+    if a:fullscreen
+      silent execute '!wmctrl -r :ACTIVE: -b toggle,fullscreen'
+    else
+      silent execute '!wmctrl -r :ACTIVE: -b toggle,maximized_horz,maximized_vert'
+    endif
   endif
 endfunction
 
-function! ToggleMenu()
+function! s:toggle_menu()
   if stridx(&guioptions, 'm') != -1
     set guioptions-=m
     let &lines=g:toggleMenuLines
@@ -471,7 +481,7 @@ function! ToggleMenu()
   endif
 endfunction
 
-function! ToggleWindowCopy()
+function! s:toggle_window_copy()
   if winnr('$') > 1
     wincmd o
   elseif bufname('%') != ''
@@ -480,7 +490,7 @@ function! ToggleWindowCopy()
   endif
 endfunction
 
-function! CheckFileEncoding()
+function! s:check_file_encoding()
   if exists('b:fenc_at_read') && &fileencoding != b:fenc_at_read
     exec 'e! ++enc=' . &fileencoding
     unlet b:fenc_at_read
@@ -506,7 +516,7 @@ augroup ToggleQuickFixWindow
  autocmd BufWinLeave * if exists("g:qfix_win") && expand("<abuf>") == g:qfix_win | unlet! g:qfix_win | endif
 augroup END
 
-function! ToggleQuickFixWindow(forced)
+function! s:toggle_quick_fix_window(forced)
   if exists("g:qfix_win") && a:forced == 0
     cclose
   else
@@ -514,27 +524,27 @@ function! ToggleQuickFixWindow(forced)
   endif
 endfunction
 
-function! Cmd(command)
+function! s:cmd(command)
   echom iconv(system(a:command), "cp866", &enc)
 endfunction
 
-function! Lnext()
+function! s:location_next()
   try
-    :lnext
+    :LocationNext
   catch
     :ll
   endtry
 endfunction
 
-function! Lprev()
+function! s:location_prev()
   try
-    :lprev
+    :LocationPrev
   catch
     :ll
   endtry
 endfunction
 
-function! GetVirtualEnv()
+function! s:get_virtual_env()
   let name=$VIRTUAL_ENV
   if &filetype ==# 'python' && !empty(name)
     return '['.fnamemodify(name, ':t').']'
@@ -543,17 +553,17 @@ function! GetVirtualEnv()
   endif
 endfunction
 
-function! GitHead()
+function! s:git_head()
   let name=fugitive#head()
   return empty(name) ? '' : '['.name.']'
 endfunction
 
-function! FileType()
+function! s:file_type()
   let fileType=&filetype
   return empty(fileType) ? '' : '['.fileType.']'
 endfunction
 
-function! FileFormat()
+function! s:file_format()
   let fileFormat=&fileformat
   if (has('win32') && fileFormat ==# 'dos')
         \ || (has('unix') && fileFormat ==# 'unix')
@@ -563,7 +573,7 @@ function! FileFormat()
   return empty(fileFormat) ? '' : '['.fileFormat.']'
 endfunction
 
-function! FileEncoding()
+function! s:file_encoding()
   let fileEncoding=&fileencoding
   if fileEncoding ==# 'utf-8'
     let fileEncoding=''
@@ -571,7 +581,7 @@ function! FileEncoding()
   return empty(fileEncoding) ? '' : '['.fileEncoding.']'
 endfunction
 
-function! MakeFolders()
+function! s:make_folders()
   if exists('+undodir')
     let undo_directory=expand(&undodir)
     if !isdirectory(undo_directory)
@@ -580,7 +590,7 @@ function! MakeFolders()
   endif
 endfunction
 
-function! s:GrepOperator(type)
+function! s:grep_operator(type)
   let unnamed_register=@@
   if a:type ==# 'v'
     normal! `<v`>y
@@ -598,7 +608,7 @@ function! s:GrepOperator(type)
   let @@=unnamed_register
 endfunction
 
-function! s:IncreaseFont()
+function! s:font_increase()
   if has("gui_running")
     if has("win32")
       let font_seq=split(&guifont, ':')
@@ -610,7 +620,7 @@ function! s:IncreaseFont()
   endif
 endfunction
 
-function! s:DecreaseFont()
+function! s:font_decrease()
   if has("gui_running")
     if has("win32")
       let font_seq=split(&guifont, ':')
@@ -621,18 +631,57 @@ function! s:DecreaseFont()
     endif
   endif
 endfunction
+
+function! s:match_patterns(s, patterns)
+  for i in range(len(a:patterns))
+    if match(a:s, a:patterns[i]) != -1
+      return 1
+    endif
+  endfor
+  return 0
+endfunction
+
+function! s:is_valid_bufname(s)
+  return !s:match_patterns(a:s, [
+        \ '^term://', 
+        \ 'vim/runtime/doc/[^\.]\+\.txt$',
+        \ ])
+endfunction
+
+function! s:find_buffer(bufnr_list)
+  for i in a:bufnr_list
+    if bufexists(i) && s:is_valid_bufname(bufname(i))
+      return i
+    endif
+  endfor
+  return bufnr('%')
+endfunction
+
+function! s:buffer_next()
+  let num = bufnr('%')
+  let bufnr_list = range(num + 1, bufnr('$')) + range(1, num)
+  execute 'buffer '.s:find_buffer(bufnr_list)
+endfunction
+
+function! s:buffer_prev()
+  let num = bufnr('%')
+  let bufnr_list = reverse(range(1, num - 1)) + reverse(range(num, bufnr('$')))
+  execute 'buffer '.s:find_buffer(bufnr_list)
+endfunction
 " }}}
 " {{{ User Defined Commands
-command! -bang -nargs=? ToggleQuickFixWindow call ToggleQuickFixWindow(<bang>0)
-command! Lnext call Lnext()
-command! Lprev call Lprev()
-command! ToggleHelp call ToggleHelp()
-command! ToggleTerminal call ToggleTerminal()
-command! ToggleWindowSize call ToggleWindowSize()
-command! ToggleMenu call ToggleMenu()
-command! ToggleWindowCopy call ToggleWindowCopy()
-command! IncreaseFont call s:IncreaseFont()
-command! DecreaseFont call s:DecreaseFont()
+command! -bang -nargs=? ToggleQuickFixWindow call s:toggle_quick_fix_window(<bang>0)
+command! LocationNext call s:location_next()
+command! LocationPrev call s:location_prev()
+command! ToggleHelp call s:toggle_help()
+command! ToggleTerminal call s:toggle_terminal()
+command! ToggleWindowSize call s:toggle_window_size(0)
+command! ToggleMenu call s:toggle_menu()
+command! ToggleWindowCopy call s:toggle_window_copy()
+command! FontIncrease call s:font_increase()
+command! FontDecrease call s:font_decrease()
+command! BufferNext call s:buffer_next()
+command! BufferPrev call s:buffer_prev()
 " }}}
 " {{{ Menu Definition
 set wildmenu

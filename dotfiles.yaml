@@ -6,21 +6,28 @@ commands:
     - "git clone https://github.com/VundleVim/Vundle.vim.git ~/.vundle/Vundle.vim"
 
 link:
-    profile: ~/.profile
-    bashrc: ~/.bashrc
-    bash_logout: ~/.bash_logout
-    inputrc: ~/.inputrc
+    system/profile: ~/.profile
+    system/bashrc: ~/.bashrc
+    system/bash_logout: ~/.bash_logout
+    system/functionrc: ~/.functionrc
+    system/aliasrc: ~/.aliasrc
+    system/promptrc: ~/.promptrc
+    system/envrc: ~/.envrc
+    system/inputrc: ~/.inputrc
+    system/tmux.conf: ~/.tmux.conf
+
     vim: ~/.vim
     vim: ~/.config/nvim
     vim/vimrc: ~/.config/nvim/init.vim
-    terminalrc: ~/.config/xfce4/terminal/terminalrc
-    accels.scm: ~/.config/xfce4/terminal/accels.scm
-    ackrc: ~/.ackrc
-    ctags.cnf: ~/.ctags
-    pylintrc: ~/.pylintrc
-    gitconfig: ~/.gitconfig
-    tmux.conf: ~/.tmux.conf
-    kdiff3rc: ~/.kdiff3rc
-    Xdefaults: ~/.Xdefaults
-    xinputrc: ~/.xinputrc
-    Xmodmap: ~/.Xmodmap
+
+    desktop/terminalrc: ~/.config/xfce4/terminal/terminalrc
+    desktop/accels.scm: ~/.config/xfce4/terminal/accels.scm
+    desktop/Xdefaults: ~/.Xdefaults
+    desktop/xinputrc: ~/.xinputrc
+    desktop/Xmodmap: ~/.Xmodmap
+
+    misc/ackrc: ~/.ackrc
+    misc/ctags.cnf: ~/.ctags
+    misc/pylintrc: ~/.pylintrc
+    misc/gitconfig: ~/.gitconfig
+    misc/kdiff3rc: ~/.kdiff3rc

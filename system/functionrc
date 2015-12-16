@@ -1,0 +1,5 @@
+# vim: set ft=sh :
+
+example() {
+    echo "argument = $1"
+}
