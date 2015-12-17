@@ -5,6 +5,7 @@ GREP_COLORS="ms=38;5;150:fn=38;5;110:se=38;5;180:bn=38;5;180:ln=38;5;180"
 M2_HOME=/opt/maven
 GOROOT=/opt/go
 GOPATH=~/projects/gopath
+EDITOR=nvim
 TZ=/usr/share/zoneinfo/Europe/Moscow
 
 PATH=$PATH:$M2_HOME/bin:$GOROOT/bin

@@ -20,6 +20,8 @@ link:
     vim: ~/.config/nvim
     vim/vimrc: ~/.config/nvim/init.vim
 
+    pudb: ~/.config/pudb
+
     desktop/terminalrc: ~/.config/xfce4/terminal/terminalrc
     desktop/accels.scm: ~/.config/xfce4/terminal/accels.scm
     desktop/Xdefaults: ~/.Xdefaults
