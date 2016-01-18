@@ -24,10 +24,11 @@ Plugin 'kadych/vim-python.git'
 Plugin 'kadych/vim-java.git'
 Plugin 'kadych/vim-xoria256.git'
 Plugin 'nanotech/jellybeans.vim.git'
+Plugin 'fisadev/vim-isort'
 call vundle#end()
 filetype plugin indent on
 " }}}
-" {{{ Basic Settings 
+" {{{ Basic Settings
 set tabstop=4 " number of spaces that a <tab> in the file counts for
 set shiftwidth=4 " number of spaces to use for each step of (auto)indent
 set softtabstop=4 " number of spaces that a <tab> counts for editing operations
@@ -66,7 +67,7 @@ set rulerformat=%=%m[%l:%c][%p%%] " determines the content of the ruler string
 set titlestring=%F\ -\ VIM " it will be used for the title of the window
 set incsearch " while typing a search command, show where the pattern, matches
 set ignorecase " ignore case in search patterns
-set history=200 " a history of ':' commands, and a history of previous search patterns
+" set history=200 " a history of ':' commands, and a history of previous search patterns
 set keymap=russian-jcukenwin " name of a keyboard mapping
 set iminsert=0 " neither :lmap nor IM will be used in insert mode
 set imsearch=0 " neither :lmap nor IM will be used when entering a search pattern
@@ -127,105 +128,174 @@ catch /Vim/
   echomsg v:exception
 endtry
 
-if has('unix')
+if has('unix') && !has('nvim')
   execute 'set <m-j>=\ej'
   execute 'set <m-k>=\ek'
 endif
 " }}}
-" {{{ Plugin Variables 
-let g:user='Kirill Dunaev'
-let mapleader=','
-let fileencoding=&enc
-let termencoding=&enc
-let python_highlight_all=1
-let pascal_pascal=1
-let g:airline_detect_iminsert=1
-let g:airline#extensions#whitespace#enabled=0
+" {{{ Plugin Variables
+let g:user = 'Kirill Dunaev'
+let mapleader = ','
+let fileencoding = &enc
+let termencoding = &enc
+let python_highlight_all = 1
+let pascal_pascal = 1
+let g:airline_detect_iminsert = 1
+let g:airline#extensions#whitespace#enabled = 0
 
-let g:qfix_height=10
-let g:XkbSwitchEnabled=1
-let g:XkbSwitchIMappings=['ru']
+let g:qfix_height = 10
+let g:XkbSwitchEnabled = 1
+let g:XkbSwitchIMappings = ['ru']
 
-let g:session_autoload='no'
-let g:session_autosave='yes'
-let g:session_autosave_periodic=10
-let g:session_verbose_messages=0
-let g:session_directory='~/.sessions'
+let g:vim_isort_map = ''
 
-let g:indentLine_fileType=['python', 'java', 'groovy', 'c', 'cpp', 'xml']
+let g:session_autoload = 'no'
+let g:session_autosave = 'yes'
+let g:session_autosave_periodic = 10
+let g:session_verbose_messages = 0
+let g:session_directory = '~/.sessions'
 
-let g:UltiSnipsEditSplit='horizontal'
+let g:indentLine_fileType = ['python', 'java', 'groovy', 'c', 'cpp', 'xml']
 
-let groovy_allow_cpp_keywords=0
+let g:UltiSnipsEditSplit = 'horizontal'
 
-let g:tagbar_width=30
-let g:tagbar_left=1
-let g:tagbar_type_plsql={
+let groovy_allow_cpp_keywords = 0
+
+let g:tagbar_width = 30
+let g:tagbar_left = 1
+let g:tagbar_type_plsql = {
       \ "ctagstype": "plsql",
       \ "kinds": [
-      \ "c:constants",
-      \ "r:records",
-      \ "f:functions",
-      \ "p:procedures"
-      \],
-      \ "sort": 0
+      \   "c:constants",
+      \   "r:records",
+      \   "f:functions",
+      \   "p:procedures",
+      \ ],
+      \ "sort": 0,
+      \ }
+
+let g:test_togglers = {
+      \ 'java': [
+      \   ['Test%s.java', ['%s.java']],
+      \   ['%sTest.java', ['%s.java']],
+      \   ['%s.java', ['Test%s.java', '%sTest.java']],
+      \ ],
+      \ 'python': [
+      \   ['test_%s.py', ['%s.py']],
+      \   ['%s_test.py', ['%s.py']],
+      \   ['%s.py', ['test_%s.py', '%s_test.py']],
+      \ ],
+      \ 'cpp': [
+      \   ['test_%s.cpp', ['%s.cpp']],
+      \   ['%s.cpp', ['test_%s.cpp', '%s_test.cpp']],
+      \   ['%s.hpp', ['test_%s.hpp']],
+      \   ['%s.h', ['test_%s.h']],
+      \ ],
+      \ 'c': [
+      \   ['test_%s.c', ['%s.c']],
+      \   ['%s.c', ['test_%s.c', '%s_test.c']],
+      \ ],
       \}
 
-let g:toggleMenuLines=&lines
+let g:header_togglers = {
+      \ 'cpp': [
+      \   ['%s.cpp', ['%s.h', '%s.hpp']],
+      \   ['%s.h', ['%s.c', '%s.cpp']],
+      \   ['%s.hpp', ['%s.cpp']],
+      \ ],
+      \ 'c': [
+      \   ['%s.h', ['%s.c', '%s.cpp']],
+      \   ['%s.c', ['%s.h']],
+      \ ],
+      \}
 
-let g:syntastic_mode_map={
+function! g:GetTargetPath(togglers)
+  let filetype = &filetype
+  if !has_key(a:togglers, filetype)
+    return ''
+  endif
+
+  let parent_dir = expand('%:h')
+  let file_name = expand('%:t')
+
+  for i in range(len(a:togglers[filetype]))
+    let raw_pattern = a:togglers[filetype][i][0]
+    let pattern = printf(raw_pattern, '\([^.]\+\)')
+    let groups = matchlist(file_name, pattern)
+    if len(groups) > 1
+      let module_name = groups[1]
+      let target_list = a:togglers[filetype][i][1]
+      for j in range(len(target_list))
+        let target_path = parent_dir.'/'.printf(target_list[j], module_name)
+        if filereadable(target_path)
+          return target_path
+        endif
+      endfor
+      return parent_dir.'/'.printf(target_list[0], module_name)
+    endif
+  endfor
+
+  return ''
+endfunction
+
+let g:toggle_menu_lines = &lines
+
+let g:syntastic_mode_map = {
       \ "mode": "passive",
       \ "active_filetypes": [],
       \ "passive_filetypes": ['python']
-      \}
-let g:syntastic_enable_highlighting=0
-let g:syntastic_always_populate_loc_list=1
+      \ }
+let g:syntastic_enable_highlighting = 0
+let g:syntastic_always_populate_loc_list = 1
 
-let g:jedi#popup_on_dot=0
+let g:jedi#popup_on_dot = 0
 " let g:jedi#show_call_signatures=2
 "
-let g:vimfiles_directory='~/.vim'
-let g:file_separator='/'
-let g:path_separator=':'
+let g:vimfiles_directory = '~/.vim'
+let g:file_separator = '/'
+let g:path_separator = ':'
 if has("win32")
-  let g:vimfiles_directory='~/vimfiles'
-  let g:file_separator='\'
-  let g:path_separator=';'
+  let g:vimfiles_directory = '~/vimfiles'
+  let g:file_separator = '\'
+  let g:path_separator = ';'
 endif
 
-let g:pymode_python='python3'
-let g:pymode_folding=0
-let g:pymode_doc=0
+let g:pymode_python = 'python3'
+let g:pymode_folding = 0
+let g:pymode_doc = 0
 
 if has('win32')
-  let g:virtualenv_directory='D:/projects'
+  let g:virtualenv_directory = 'D:/projects'
 endif
 
-" let g:neocomplete#enable_at_startup=1
-"
+" let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+" let g:neocomplete#enable_at_startup = 1
+
 if has('win32')
-  let $PATH=$PATH.';D:/tools/git/cmd'
+  let $PATH = $PATH.';D:/tools/git/cmd'
 endif
 
 if $GREP_OPTIONS == ''
-  let $GREP_OPTIONS='
-    \ --exclude-dir=.git
-    \ --exclude-dir=.gradle
-    \ --exclude-dir=.hg
-    \ --exclude-dir=.idea
-    \ --exclude-dir=.svn
-    \ --exclude-dir=build
-    \ --exclude-dir=out
-    \ --exclude-dir=target
-    \ --exclude=tags
-    \'
+  let $GREP_OPTIONS = '
+        \ --exclude-dir=.git
+        \ --exclude-dir=.gradle
+        \ --exclude-dir=.hg
+        \ --exclude-dir=.idea
+        \ --exclude-dir=.svn
+        \ --exclude-dir=build
+        \ --exclude-dir=out
+        \ --exclude-dir=target
+        \ --exclude=tags
+        \'
 endif
-let g:ackprg='ag --vimgrep'
+let g:ackprg = 'ag --vimgrep'
 " }}}
-" {{{ Autocommands 
+" {{{ Autocommands
 augroup programming
   autocmd!
   autocmd VimEnter * call s:make_folders()
+  autocmd WinEnter * setlocal cursorline
+  autocmd WinLeave * setlocal nocursorline
   autocmd BufReadPost * execute "normal! `\"zz"
 
   autocmd FileType lua nmap <buffer> <s-f8> :luafile %<cr>
@@ -240,9 +310,12 @@ augroup programming
   autocmd FileType cpp,cpp11 nmap <buffer> <f7> :make<cr>
   autocmd FileType cpp,cpp11 nmap <buffer> <s-f8> :!scons run<cr>
 
-  autocmd FileType vim setlocal foldmethod=marker
+  autocmd FileType vim,python setlocal foldmethod=marker
   " autocmd FileType vim setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
   autocmd FileType vim nmap <buffer> <s-f8> :source %<cr>
+
+  autocmd FileType python nmap <buffer> <leader>jo :Isort<cr>
+  autocmd FileType python vmap <buffer> <leader>jo :Isort<cr>
 
   autocmd FileType groovy nmap <buffer> <f7> :make<cr>
 
@@ -257,7 +330,7 @@ augroup programming
   " autocmd FileType pascal setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
 
   " autocmd FileType htmldjango setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
-  autocmd BufWritePre *.py,*.js,*.cpp,*.h,*.java :call <sid>StripTrailingWhitespaces()
+  autocmd BufWritePre *.py,*.js,*.cpp,*.h,*.java :call <sid>strip_trailing_spaces()
 
   autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
   autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
@@ -286,7 +359,7 @@ augroup checktime
   endif
 augroup END
 " }}}
-" {{{ Mappings 
+" {{{ Mappings
 " hide search highlighting
 nnoremap <c-l> :<c-u>nohlsearch<cr>
 inoremap <c-l> <esc>:<c-u>nohlsearch<cr>a
@@ -324,16 +397,16 @@ vnoremap L $
 nnoremap <c-j> :BufferNext<cr>
 nnoremap <c-k> :BufferPrev<cr>
 " quick jumps through the text
-vnoremap <m-l> 5l
-nnoremap <m-l> 5l
-vnoremap <m-h> 5h
-nnoremap <m-h> 5h
+" vnoremap <m-l> 5l
+" nnoremap <m-l> 5l
+" vnoremap <m-h> 5h
+" nnoremap <m-h> 5h
 vnoremap <m-k> 5k
 nnoremap <m-k> 5k
 vnoremap <m-j> 5j
 nnoremap <m-j> 5j
 " unix terminal patch
-if has('unix')
+if has('unix') && !has('nvim')
   execute "set <m-j>=\ej"
   execute "set <m-k>=\ek"
 endi
@@ -348,7 +421,7 @@ nnoremap <leader>wl :wincmd l<cr>
 nnoremap <leader>wH :wincmd H<cr>
 nnoremap <leader>wL :wincmd L<cr>
 nnoremap <leader>we :wincmd =<cr>
-nnoremap <leader>wd :bdelete<cr>
+nnoremap <leader>wd :BufferDelete<cr>
 nnoremap <leader>wo :only<cr>
 nnoremap <leader>wc :quit<cr>
 nnoremap <leader>w, :wincmd p<cr>
@@ -369,7 +442,7 @@ nnoremap <f4> :ToggleQuickFixWindow<cr>
 nnoremap <f9> :ToggleMenu<cr>
 " maximize window size
 nnoremap <leader>z :ToggleWindowSize<cr>
-nnoremap <leader>Z :call s:toggle_window_size(1)<cr>
+nnoremap <leader>Z :ToggleFullscreenSize<cr>
 " increase editor font, works only in gui mode
 nnoremap <m-=> :FontIncrease<cr>
 " decrease editor font
@@ -377,17 +450,13 @@ nnoremap <m--> :FontDecrease<cr>
 " maps Esc to exit from terminal mode (NeoVim)
 if exists(':tnoremap')
   tnoremap <esc> <c-\><c-n>
+  tnoremap <s-tab> <c-\><c-n>gt
 endif
 " show terminal window (NeoVim)
 if exists(':terminal')
   nnoremap <leader>wt :ToggleTerminal<cr>
+  autocmd WinEnter term://* setlocal nocursorline
 endif
-" neovim yanking patch
-" if has('nvim') && $SSH_CLIENT =~ ".207."
-"   nnoremap yy ddu
-"   nnoremap y du
-"   vnoremap y du
-" endif
 " }}}
 " {{{ Abbreviations
 augroup abbreviations
@@ -412,55 +481,72 @@ function! s:change_spell_lang()
 endfunction
 
 function! s:find_special_window(name_pattern)
-  let buflist=[]
+  let buflist = []
   for i in range(tabpagenr('$'))
-    let buflist=tabpagebuflist(i + 1)
+    let buflist = tabpagebuflist(i + 1)
     for j in range(len(buflist))
-      let buffer_name=bufname(buflist[j])
+      let buffer_name = bufname(buflist[j])
       if match(buffer_name, a:name_pattern) != -1
-        return [i + 1, j + 1]
+        return (i + 1) * 1000 + j + 1
       endif
     endfor
   endfor
-  return [1, -1]
+  return 0
 endfunction
+
+function! s:get_tabnr(num)
+  return a:num / 1000
+endfunction
+
+function! s:get_bufnr(num)
+  return a:num % 1000
+endfunction
+
+let s:help_buffer_pattern = '[\\/]doc[\\/].\+\.txt$'
 
 function! s:find_help_window()
-  return s:find_special_window('[\\/]doc[\\/].\+\.txt$')
+  return s:find_special_window(s:help_buffer_pattern)
 endfunction
 
-function! s:find_terminal_window()
-  return s:find_special_window('^term://')
+let s:term_buffer_pattern = '^term://'
+
+function! s:find_term_window()
+  return s:find_special_window(s:term_buffer_pattern)
+endfunction
+
+function! s:new_help_window()
+  tab help
+endfunction
+
+function! s:new_term_window()
+  tabnew
+  terminal
+endfunction
+
+function! s:open_window(num)
+  if a:num != 0
+    execute 'tabn '.s:get_tabnr(a:num)
+    execute s:get_bufnr(a:num).'wincmd w'
+  endif
+  return a:num
 endfunction
 
 function! s:toggle_help()
-  let nr=s:find_help_window()
-  if nr[1] != -1
-    execute 'tabn '.nr[0]
-    execute nr[1].'wincmd w'
-  else
-    tab help
+  if !s:open_window(s:find_help_window())
+    call s:new_help_window()
   endif
 endfunction
 
 function! s:toggle_terminal()
-  let nr=s:find_terminal_window()
-  if nr[1] != -1
-    execute 'tabn '.nr[0]
-    execute nr[1].'wincmd w'
-  else
-    " execute 'rightbelow vsplit term://bash'
-    tabnew
-    terminal
-    " nnoremap <buffer> <c-j> <nop>
-    " nnoremap <buffer> <c-k> <nop>
+  if !s:open_window(s:find_term_window())
+    call s:new_term_window()
   endif
 endfunction
 
 function! s:toggle_window_size(fullscreen)
   if has('win32') && has('gui_running')
-    let libvimuser=$VIMRUNTIME.'/libvimuser.dll'
-    let result=libcall(libvimuser, 'show_window', v:windowid)
+    let libvimuser = $VIMRUNTIME.'/libvimuser.dll'
+    let result = libcall(libvimuser, 'show_window', v:windowid)
     wincmd =
   elseif has('unix')
     if a:fullscreen
@@ -474,9 +560,9 @@ endfunction
 function! s:toggle_menu()
   if stridx(&guioptions, 'm') != -1
     set guioptions-=m
-    let &lines=g:toggleMenuLines
+    let &lines=g:toggle_menu_lines
   else
-    let g:toggleMenuLines=&lines
+    let g:toggle_menu_lines = &lines
     set guioptions+=m
   endif
 endfunction
@@ -498,21 +584,21 @@ function! s:check_file_encoding()
   endif
 endfunction
 
-function! <sid>StripTrailingWhitespaces()
+function! <sid>strip_trailing_spaces()
   " Preparation: save last search, and cursor position.
-  let _s=@/
-  let l=line(".")
-  let c=col(".")
+  let _s = @/
+  let l = line(".")
+  let c = col(".")
   " Do the business:
   %s/\s\+$//e
   " Clean up: restore previous search history, and cursor position
-  let @/=_s
+  let @/ = _s
   call cursor(l, c)
 endfunction
 
 augroup ToggleQuickFixWindow
  autocmd!
- autocmd BufWinEnter quickfix let g:qfix_win=bufnr("$")
+ autocmd BufWinEnter quickfix let g:qfix_win = bufnr("$")
  autocmd BufWinLeave * if exists("g:qfix_win") && expand("<abuf>") == g:qfix_win | unlet! g:qfix_win | endif
 augroup END
 
@@ -524,28 +610,24 @@ function! s:toggle_quick_fix_window(forced)
   endif
 endfunction
 
-function! s:cmd(command)
-  echom iconv(system(a:command), "cp866", &enc)
-endfunction
-
 function! s:location_next()
   try
-    :LocationNext
+    lnext
   catch
-    :ll
+    ll
   endtry
 endfunction
 
 function! s:location_prev()
   try
-    :LocationPrev
+    lprev
   catch
-    :ll
+    ll
   endtry
 endfunction
 
 function! s:get_virtual_env()
-  let name=$VIRTUAL_ENV
+  let name = $VIRTUAL_ENV
   if &filetype ==# 'python' && !empty(name)
     return '['.fnamemodify(name, ':t').']'
   else
@@ -554,36 +636,36 @@ function! s:get_virtual_env()
 endfunction
 
 function! s:git_head()
-  let name=fugitive#head()
+  let name = fugitive#head()
   return empty(name) ? '' : '['.name.']'
 endfunction
 
 function! s:file_type()
-  let fileType=&filetype
+  let fileType = &filetype
   return empty(fileType) ? '' : '['.fileType.']'
 endfunction
 
 function! s:file_format()
-  let fileFormat=&fileformat
+  let fileFormat = &fileformat
   if (has('win32') && fileFormat ==# 'dos')
         \ || (has('unix') && fileFormat ==# 'unix')
         \ || (has('mac') && fileFormat ==# 'mac')
-    let fileFormat=''
+    let fileFormat = ''
   endif
   return empty(fileFormat) ? '' : '['.fileFormat.']'
 endfunction
 
 function! s:file_encoding()
-  let fileEncoding=&fileencoding
+  let fileEncoding = &fileencoding
   if fileEncoding ==# 'utf-8'
-    let fileEncoding=''
+    let fileEncoding = ''
   endif
   return empty(fileEncoding) ? '' : '['.fileEncoding.']'
 endfunction
 
 function! s:make_folders()
   if exists('+undodir')
-    let undo_directory=expand(&undodir)
+    let undo_directory = expand(&undodir)
     if !isdirectory(undo_directory)
       call mkdir(undo_directory)
     endif
@@ -591,7 +673,7 @@ function! s:make_folders()
 endfunction
 
 function! s:grep_operator(type)
-  let unnamed_register=@@
+  let unnamed_register = @@
   if a:type ==# 'v'
     normal! `<v`>y
   elseif a:type ==# 'char'
@@ -599,22 +681,22 @@ function! s:grep_operator(type)
   else
     return
   endif
-  let pattern=@@
+  let pattern = @@
   if &filetype ==# 'vim'
-    let pattern=escape(pattern, '#')
+    let pattern = escape(pattern, '#')
   endif
   silent execute "grep! ".shellescape(pattern)." ."
   botright copen
-  let @@=unnamed_register
+  let @@ = unnamed_register
 endfunction
 
 function! s:font_increase()
   if has("gui_running")
     if has("win32")
-      let font_seq=split(&guifont, ':')
+      let font_seq = split(&guifont, ':')
       if len(font_seq) > 1 && font_seq[1][0] ==? 'h'
-        let font_seq[1]='h'. (font_seq[1][1:] + 1)
-        let &guifont=join(font_seq, ':')
+        let font_seq[1] = 'h'. (font_seq[1][1:] + 1)
+        let &guifont = join(font_seq, ':')
       endif
     endif
   endif
@@ -623,10 +705,10 @@ endfunction
 function! s:font_decrease()
   if has("gui_running")
     if has("win32")
-      let font_seq=split(&guifont, ':')
+      let font_seq = split(&guifont, ':')
       if len(font_seq) > 1 && font_seq[1][0] ==? 'h'
-        let font_seq[1]='h'. (font_seq[1][1:] - 1)
-        let &guifont=join(font_seq, ':')
+        let font_seq[1] = 'h'. (font_seq[1][1:] - 1)
+        let &guifont = join(font_seq, ':')
       endif
     endif
   endif
@@ -642,10 +724,7 @@ function! s:match_patterns(s, patterns)
 endfunction
 
 function! s:is_valid_bufname(s)
-  return !s:match_patterns(a:s, [
-        \ '^term://', 
-        \ 'vim/runtime/doc/[^\.]\+\.txt$',
-        \ ])
+  return !s:match_patterns(a:s, [s:help_buffer_pattern, s:term_buffer_pattern])
 endfunction
 
 function! s:find_buffer(bufnr_list)
@@ -657,16 +736,33 @@ function! s:find_buffer(bufnr_list)
   return bufnr('%')
 endfunction
 
+function! s:get_forward_range(num)
+  return range(a:num + 1, bufnr('$')) + range(1, a:num)
+endfunction
+
+function! s:get_backward_range(num)
+  return reverse(range(1, a:num - 1)) + reverse(range(a:num, bufnr('$')))
+endfunction
+
 function! s:buffer_next()
-  let num = bufnr('%')
-  let bufnr_list = range(num + 1, bufnr('$')) + range(1, num)
-  execute 'buffer '.s:find_buffer(bufnr_list)
+  execute 'buffer '.s:find_buffer(s:get_forward_range(bufnr('%')))
 endfunction
 
 function! s:buffer_prev()
+  execute 'buffer '.s:find_buffer(s:get_backward_range(bufnr('%')))
+endfunction
+
+function! s:buffer_delete()
   let num = bufnr('%')
-  let bufnr_list = reverse(range(1, num - 1)) + reverse(range(num, bufnr('$')))
-  execute 'buffer '.s:find_buffer(bufnr_list)
+  if s:is_valid_bufname(bufname(num))
+    let next_num = s:find_buffer(s:get_forward_range(num))
+    if next_num != num
+      execute 'buffer '.next_num
+    endif
+    execute 'bwipeout '.num
+  else
+    execute 'bwipeout! '.num
+  endif
 endfunction
 " }}}
 " {{{ User Defined Commands
@@ -676,12 +772,14 @@ command! LocationPrev call s:location_prev()
 command! ToggleHelp call s:toggle_help()
 command! ToggleTerminal call s:toggle_terminal()
 command! ToggleWindowSize call s:toggle_window_size(0)
+command! ToggleFullscreenSize call s:toggle_window_size(1)
 command! ToggleMenu call s:toggle_menu()
 command! ToggleWindowCopy call s:toggle_window_copy()
 command! FontIncrease call s:font_increase()
 command! FontDecrease call s:font_decrease()
 command! BufferNext call s:buffer_next()
 command! BufferPrev call s:buffer_prev()
+command! BufferDelete call s:buffer_delete()
 " }}}
 " {{{ Menu Definition
 set wildmenu

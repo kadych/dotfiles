@@ -28,3 +28,41 @@ xscreensaver.passwd.thermometer.width:       8
 !datestamp format--see the strftime(3) manual page for details
 xscreensaver.dateFormat:    %I:%M%P %a %b %d, %Y
 
+Xft.antialias: true
+Xft.hintstyle: hintfull
+Xft.dpi: 96
+Xft.rgba: rgb
+Xft.hinting: true
+
+URxvt.depth: 32
+URxvt.geometry: 85x25
+URxvt.font: xft:Consolas:size=11
+URxvt.scrollBar: false
+URxvt.iconFile: /usr/share/icons/elementary-xfce/apps/24/xfce-terminal.png
+URxvt.letterSpace: -2
+URxvt.lineSpace: 0
+URxvt.perl-ext-common: default,clipboard
+URxvt.iso14755: false
+URxvt.keysym.M-c: perl:clipboard:copy
+URxvt.keysym.M-v: perl:clipboard:paste
+URxvt.keysym.M-C-v: perl:clipboard:paste_escaped
+URxvt.pointerBlank: true
+URxvt.foreground: Grey82
+*cursorColor: Tan
+*foreground: Grey82
+*background: Grey11
+
+*color2: DarkSeaGreen3
+*color3: Wheat1
+*color4: LightSkyBlue3
+*color5: Plum4
+*color6: LightSteelBlue3
+*color7: Grey82
+*color9: LightPink3
+*color10: DarkSeaGreen3
+*color11: Wheat1
+*color12: LightSkyBlue3
+*color13: Plum4
+*color14: LightSteelBlue3
+*color15: Grey82
+

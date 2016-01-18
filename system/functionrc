@@ -3,3 +3,7 @@
 example() {
     echo "argument = $1"
 }
+
+dirsize() {
+    find $1 -maxdepth 1 -type d -exec du -hs {} \; | sort -k 2
+}
