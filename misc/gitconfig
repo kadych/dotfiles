@@ -17,3 +17,5 @@
 [user]
     email = kirill.dunaev@gmail.com
     name = Kirill Dunaev
+[push]
+	default = matching

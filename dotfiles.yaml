@@ -1,6 +1,6 @@
 directories:
     - ~/.config/xfce4/terminal
-    - ~/.vundle
+    - ~/.bundle
 
 commands:
     - "git clone https://github.com/VundleVim/Vundle.vim.git ~/.vundle/Vundle.vim"

@@ -1,31 +1,29 @@
 " vim: set sw=2 sts=2 ts=2 ff=unix et:
 " {{{ Plugin List
-let g:vundle_bundle='~/.vundle'
+let g:plugin_bundle='~/.bundle'
 set nocompatible
 
 filetype off
-execute 'set rtp+='.g:vundle_bundle.'/Vundle.vim'
-call vundle#begin(g:vundle_bundle)
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'mileszs/ack.vim.git'
-Plugin 'kien/ctrlp.vim.git'
-Plugin 'scrooloose/syntastic.git'
-Plugin 'majutsushi/tagbar.git'
-Plugin 'bling/vim-airline.git'
-Plugin 'guns/vim-clojure-static.git'
-Plugin 'tpope/vim-commentary.git'
-Plugin 'tpope/vim-fireplace.git'
-Plugin 'tpope/vim-fugitive.git'
-Plugin 'xolox/vim-misc.git'
-Plugin 'xolox/vim-session.git'
-Plugin 'jmcantrell/vim-virtualenv.git'
-Plugin 'SirVer/ultisnips.git'
-Plugin 'kadych/vim-python.git'
-Plugin 'kadych/vim-java.git'
-Plugin 'kadych/vim-xoria256.git'
-Plugin 'nanotech/jellybeans.vim.git'
-Plugin 'fisadev/vim-isort'
-call vundle#end()
+call plug#begin(g:plugin_bundle)
+Plug 'mileszs/ack.vim'
+Plug 'kien/ctrlp.vim'
+Plug 'scrooloose/syntastic'
+Plug 'majutsushi/tagbar'
+Plug 'bling/vim-airline'
+Plug 'guns/vim-clojure-static'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fireplace'
+Plug 'tpope/vim-fugitive'
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-session'
+Plug 'jmcantrell/vim-virtualenv'
+Plug 'SirVer/ultisnips'
+Plug 'kadych/vim-python'
+Plug 'kadych/vim-java'
+Plug 'kadych/vim-xoria256'
+Plug 'nanotech/jellybeans.vim'
+Plug 'fisadev/vim-isort'
+call plug#end()
 filetype plugin indent on
 " }}}
 " {{{ Basic Settings
@@ -364,6 +362,7 @@ augroup END
 nnoremap <c-l> :<c-u>nohlsearch<cr>
 inoremap <c-l> <esc>:<c-u>nohlsearch<cr>a
 nnoremap <s-tab> gt
+nnoremap <c-s-tab> gT
 " move current line downward
 nnoremap - ddp
 " move current line upward
@@ -374,6 +373,8 @@ inoremap <c-d> <esc>ddi
 inoremap <c-u> <esc>mqviwU`qa
 " open .vimrc file in vertical split
 nnoremap <leader>ve :edit $MYVIMRC<cr>
+" open UltiSnips editor
+nnoremap <leader>vu :UltiSnipsEdit<cr>
 " execute .vimrc file
 nnoremap <leader>vs :source $MYVIMRC<cr>
 " disable ex mode
@@ -455,6 +456,7 @@ endif
 " show terminal window (NeoVim)
 if exists(':terminal')
   nnoremap <leader>wt :ToggleTerminal<cr>
+  autocmd TermOpen * setlocal nocursorline
   autocmd WinEnter term://* setlocal nocursorline
 endif
 " }}}
