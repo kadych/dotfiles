@@ -43,7 +43,7 @@ fi
 
 runcommand() {
     if [ -f $1 ]; then
-        . $1
+        source $1
     fi
 }
 
@@ -51,3 +51,4 @@ runcommand ~/.functionrc
 runcommand ~/.aliasrc
 runcommand ~/.promptrc
 runcommand ~/.envrc
+runcommand ~/.fzfrc

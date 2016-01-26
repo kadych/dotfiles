@@ -2,8 +2,8 @@ directories:
     - ~/.config/xfce4/terminal
     - ~/.bundle
 
-commands:
-    - "git clone https://github.com/VundleVim/Vundle.vim.git ~/.vundle/Vundle.vim"
+# commands:
+#     - "git clone https://github.com/VundleVim/Vundle.vim.git ~/.vundle/Vundle.vim"
 
 link:
     system/profile: ~/.profile
@@ -15,6 +15,7 @@ link:
     system/envrc: ~/.envrc
     system/inputrc: ~/.inputrc
     system/tmux.conf: ~/.tmux.conf
+    system/fzfrc: ~/.fzfrc
 
     vim: ~/.vim
     vim: ~/.config/nvim

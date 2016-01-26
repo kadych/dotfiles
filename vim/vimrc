@@ -6,13 +6,15 @@ set nocompatible
 filetype off
 call plug#begin(g:plugin_bundle)
 Plug 'mileszs/ack.vim'
-Plug 'kien/ctrlp.vim'
-Plug 'scrooloose/syntastic'
+" Plug 'kien/ctrlp.vim'
+" Plug 'scrooloose/syntastic'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'benekastah/neomake'
 Plug 'majutsushi/tagbar'
 Plug 'bling/vim-airline'
-Plug 'guns/vim-clojure-static'
+" Plug 'guns/vim-clojure-static'
+" Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-fugitive'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
@@ -159,6 +161,19 @@ let g:UltiSnipsEditSplit = 'horizontal'
 
 let groovy_allow_cpp_keywords = 0
 
+let g:neomake_error_sign = {
+      \ 'text': 'e',
+      \ }
+let g:neomake_warning_sign = {
+      \ 'text': 'w',
+      \ }
+let g:neomake_information_sign = {
+      \ 'text': 'i',
+      \ }
+let g:neomake_message_sign = {
+      \ 'text': 'm',
+      \ }
+
 let g:tagbar_width = 30
 let g:tagbar_left = 1
 let g:tagbar_type_plsql = {
@@ -257,10 +272,6 @@ if has("win32")
   let g:file_separator = '\'
   let g:path_separator = ';'
 endif
-
-let g:pymode_python = 'python3'
-let g:pymode_folding = 0
-let g:pymode_doc = 0
 
 if has('win32')
   let g:virtualenv_directory = 'D:/projects'
@@ -363,6 +374,9 @@ nnoremap <c-l> :<c-u>nohlsearch<cr>
 inoremap <c-l> <esc>:<c-u>nohlsearch<cr>a
 nnoremap <s-tab> gt
 nnoremap <c-s-tab> gT
+" invoke FZF command-line fuzzy finder
+nnoremap <c-p> :FZF<cr>
+nnoremap <leader>jn :Neomake<cr>
 " move current line downward
 nnoremap - ddp
 " move current line upward
@@ -438,7 +452,7 @@ nnoremap <f2> :TagbarToggle<cr>
 " open current buffer in additional window
 nnoremap <f3> :ToggleWindowCopy<cr>
 " show/hide quickfix window
-nnoremap <f4> :ToggleQuickFixWindow<cr>
+nnoremap <f4> :ToggleLocationList<cr>
 " show/hide gui menu
 nnoremap <f9> :ToggleMenu<cr>
 " maximize window size
@@ -598,17 +612,64 @@ function! <sid>strip_trailing_spaces()
   call cursor(l, c)
 endfunction
 
-augroup ToggleQuickFixWindow
- autocmd!
- autocmd BufWinEnter quickfix let g:qfix_win = bufnr("$")
- autocmd BufWinLeave * if exists("g:qfix_win") && expand("<abuf>") == g:qfix_win | unlet! g:qfix_win | endif
-augroup END
+function! s:get_bugger_list() 
+  redir =>buflist 
+  silent! ls 
+  redir END 
+  return buflist 
+endfunction
 
-function! s:toggle_quick_fix_window(forced)
-  if exists("g:qfix_win") && a:forced == 0
-    cclose
+function! s:toggle_location_list()
+  let curbufnr = winbufnr(0)
+  for bufnum in map(filter(split(s:get_bugger_list(), '\n'), 'v:val =~ "Location List"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
+    if curbufnr == bufnum
+      lclose
+      return
+    endif
+  endfor
+
+  let winnr = winnr()
+  let prevwinnr = winnr("#")
+
+  let nextbufnr = winbufnr(winnr + 1)
+  try
+    lopen
+  catch /E776/
+      echohl ErrorMsg 
+      echo "Location List is Empty."
+      echohl None
+      return
+  endtry
+  if winbufnr(0) == nextbufnr
+    lclose
+    if prevwinnr > winnr
+      let prevwinnr-=1
+    endif
   else
-    execute "botright copen ".g:qfix_height
+    if prevwinnr > winnr
+      let prevwinnr+=1
+    endif
+  endif
+  " restore previous window
+  exec prevwinnr."wincmd w"
+  exec winnr."wincmd w"
+endfunction
+
+function! s:toggle_quickfix_list()
+  for bufnum in map(filter(split(s:get_buffer_list(), '\n'), 'v:val =~ "Quickfix List"'), 'str2nr(matchstr(v:val, "\\d\\+"))') 
+    if bufwinnr(bufnum) != -1
+      cclose
+      return
+    endif
+  endfor
+  let winnr = winnr()
+  if exists("g:toggle_list_copen_command")
+    exec(g:toggle_list_copen_command)
+  else
+    copen
+  endif
+  if winnr() != winnr
+    wincmd p
   endif
 endfunction
 
@@ -768,7 +829,8 @@ function! s:buffer_delete()
 endfunction
 " }}}
 " {{{ User Defined Commands
-command! -bang -nargs=? ToggleQuickFixWindow call s:toggle_quick_fix_window(<bang>0)
+command! ToggleQuickfixList call s:toggle_quickfix_list()
+command! ToggleLocationList call s:toggle_location_list()
 command! LocationNext call s:location_next()
 command! LocationPrev call s:location_prev()
 command! ToggleHelp call s:toggle_help()
