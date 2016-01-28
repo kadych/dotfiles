@@ -35,6 +35,7 @@ set softtabstop=4 " number of spaces that a <tab> counts for editing operations
 set smarttab " <tab> inf front of a line inserts blanks according to 'shiftwidth'
 set expandtab " use the appropriate number of spaces to insert a <tab>
 set autoindent " copy indent from current line when starting a new line
+set showcmd " show typing commmand
 set complete=.,k,b,t " scpecifies how keyworkd completion 'ins-completions' works
 " . - scan the current buffer
 " k - scan files given with the 'dictionary' option
@@ -377,6 +378,8 @@ nnoremap <c-s-tab> gT
 " invoke FZF command-line fuzzy finder
 nnoremap <c-p> :FZF<cr>
 nnoremap <leader>jn :Neomake<cr>
+" map language switch to ctrl+space
+inoremap <c-space> <esc>:<c-u>let &iminsert=abs(&iminsert - 1)<cr>a
 " move current line downward
 nnoremap - ddp
 " move current line upward
