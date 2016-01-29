@@ -52,3 +52,5 @@ runcommand ~/.aliasrc
 runcommand ~/.promptrc
 runcommand ~/.envrc
 runcommand ~/.fzfrc
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

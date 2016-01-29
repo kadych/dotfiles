@@ -141,6 +141,9 @@ let fileencoding = &enc
 let termencoding = &enc
 let python_highlight_all = 1
 let pascal_pascal = 1
+
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
 let g:airline_detect_iminsert = 1
 let g:airline#extensions#whitespace#enabled = 0
 
@@ -331,7 +334,8 @@ augroup programming
 
   " autocmd FileType xml setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
   " autocmd FileType text setlocal wrap
-  autocmd FileType text,help setlocal nonumber
+  autocmd FileType help setlocal nonumber nocursorline
+  autocmd FileType text setlocal nonumber
 
   autocmd BufEnter *.sql,*.pck,*.pkb,*.pks,*.trg,*.prc,*.fnc,*.vw setlocal filetype=plsql
   autocmd FileType sql,plsql setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab ignorecase errorformat=%E%l/%c%m,%C%m,%Z
@@ -356,10 +360,8 @@ augroup programming
 
   autocmd FileType help nnoremap <buffer> <c-j> <nop>
   autocmd FileType help nnoremap <buffer> <c-k> <nop>
-
-  autocmd TermOpen * nnoremap <buffer> <c-j> <nop>
-  autocmd TermOpen * nnoremap <buffer> <c-k> <nop>
 augroup END
+
 augroup checktime
   au!
   if !has("gui_running")
@@ -368,6 +370,16 @@ augroup checktime
     autocmd BufEnter,CursorHold,CursorHoldI,CursorMoved,CursorMovedI,FocusGained,BufEnter,FocusLost,WinLeave * checktime
   endif
 augroup END
+
+if exists(':terminal')
+  augroup terminal
+    autocmd!
+    autocmd TermOpen * set filetype=terminal
+    autocmd WinEnter term://* setlocal nocursorline nonumber | normal i
+    autocmd FileType terminal nnoremap <buffer> <c-j> <nop>
+    autocmd FileType terminal nnoremap <buffer> <c-k> <nop>
+  augroup END
+endif
 " }}}
 " {{{ Mappings
 " hide search highlighting
@@ -379,7 +391,7 @@ nnoremap <c-s-tab> gT
 nnoremap <c-p> :FZF<cr>
 nnoremap <leader>jn :Neomake<cr>
 " map language switch to ctrl+space
-inoremap <c-space> <esc>:<c-u>let &iminsert=abs(&iminsert - 1)<cr>a
+" inoremap <c-space> <esc>:<c-u>let &iminsert=abs(&iminsert - 1)<cr>a
 " move current line downward
 nnoremap - ddp
 " move current line upward
@@ -443,11 +455,9 @@ nnoremap <leader>wd :BufferDelete<cr>
 nnoremap <leader>wo :only<cr>
 nnoremap <leader>wc :quit<cr>
 nnoremap <leader>w, :wincmd p<cr>
-nnoremap <leader>wt :wincmd t<cr>
+nnoremap <leader>wt :ToggleTerminal<cr>
 " write current buffer
 nnoremap <leader>s :write<cr>
-" invoke syntax check
-nnoremap <leader>c :SyntasticCheck<cr>
 " show help window
 nnoremap <f1> :ToggleHelp<cr>
 " show/hide tarbar window
@@ -465,16 +475,12 @@ nnoremap <leader>Z :ToggleFullscreenSize<cr>
 nnoremap <m-=> :FontIncrease<cr>
 " decrease editor font
 nnoremap <m--> :FontDecrease<cr>
-" maps Esc to exit from terminal mode (NeoVim)
+
 if exists(':tnoremap')
+  " maps Esc to exit from terminal mode (NeoVim)
   tnoremap <esc> <c-\><c-n>
+  " maps tab switch
   tnoremap <s-tab> <c-\><c-n>gt
-endif
-" show terminal window (NeoVim)
-if exists(':terminal')
-  nnoremap <leader>wt :ToggleTerminal<cr>
-  autocmd TermOpen * setlocal nocursorline
-  autocmd WinEnter term://* setlocal nocursorline
 endif
 " }}}
 " {{{ Abbreviations
@@ -499,38 +505,57 @@ function! s:change_spell_lang()
   endif
 endfunction
 
-function! s:find_special_window(name_pattern)
-  let buflist = []
-  for i in range(tabpagenr('$'))
-    let buflist = tabpagebuflist(i + 1)
-    for j in range(len(buflist))
-      let buffer_name = bufname(buflist[j])
-      if match(buffer_name, a:name_pattern) != -1
-        return (i + 1) * 1000 + j + 1
-      endif
-    endfor
+function! s:get_tab_num(buffer_num)
+  for i in range(1, tabpagenr('$'))
+    if index(tabpagebuflist(i), a:buffer_num) != -1
+      return i
+    endif
   endfor
   return 0
 endfunction
 
-function! s:get_tabnr(num)
-  return a:num / 1000
+function! s:get_win_num(buffer_num)
+  for i in range(1, winnr('$'))
+    if winbufnr(i) == a:buffer_num
+      return i
+    endif
+  endfor
+  return 0 
 endfunction
 
-function! s:get_bufnr(num)
-  return a:num % 1000
+function! s:get_buffer_num(name_pattern)
+  for i in range(1, bufnr('$'))
+    if bufexists(i)
+      let buffer_name = bufname(i)
+      if match(buffer_name, a:name_pattern) != -1
+        return i
+      endif
+    endif
+  endfor
+  return 0
 endfunction
 
-let s:help_buffer_pattern = '[\\/]doc[\\/].\+\.txt$'
-
-function! s:find_help_window()
-  return s:find_special_window(s:help_buffer_pattern)
+function! s:open_buffer(buffer_num)
+  let tab_num = s:get_tab_num(a:buffer_num)
+  if tab_num
+    execute 'tabn '.tab_num
+    let win_num = s:get_win_num(a:buffer_num)
+    execute win_num.'wincmd w'
+  else
+    execute 'tabnew | buffer '.a:buffer_num
+  endif
 endfunction
 
 let s:term_buffer_pattern = '^term://'
 
-function! s:find_term_window()
-  return s:find_special_window(s:term_buffer_pattern)
+function! s:find_term_buffer()
+  return s:get_buffer_num(s:term_buffer_pattern)
+endfunction
+
+let s:help_buffer_pattern = '[\\/]runtime[\\/]doc[\\/][^.]\+\.txt$'
+
+function! s:find_help_buffer()
+  return s:get_buffer_num(s:help_buffer_pattern)
 endfunction
 
 function! s:new_help_window()
@@ -538,28 +563,26 @@ function! s:new_help_window()
 endfunction
 
 function! s:new_term_window()
-  tabnew
-  terminal
-endfunction
-
-function! s:open_window(num)
-  if a:num != 0
-    execute 'tabn '.s:get_tabnr(a:num)
-    execute s:get_bufnr(a:num).'wincmd w'
-  endif
-  return a:num
+  tabnew | terminal
 endfunction
 
 function! s:toggle_help()
-  if !s:open_window(s:find_help_window())
+  let buffer_num = s:find_help_buffer()
+  if buffer_num
+    call s:open_buffer(buffer_num)
+  else
     call s:new_help_window()
   endif
 endfunction
 
 function! s:toggle_terminal()
-  if !s:open_window(s:find_term_window())
+  let buffer_num = s:find_term_buffer()
+  if buffer_num
+    call s:open_buffer(buffer_num)
+  else
     call s:new_term_window()
   endif
+  syntax off | syntax on
 endfunction
 
 function! s:toggle_window_size(fullscreen)
