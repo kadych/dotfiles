@@ -391,7 +391,7 @@ nnoremap <c-s-tab> gT
 nnoremap <c-p> :FZF<cr>
 nnoremap <leader>jn :Neomake<cr>
 " map language switch to ctrl+space
-" inoremap <c-space> <esc>:<c-u>let &iminsert=abs(&iminsert - 1)<cr>a
+inoremap <c-@> <c-O>:let &iminsert=abs(&iminsert - 1)<cr>
 " move current line downward
 nnoremap - ddp
 " move current line upward
