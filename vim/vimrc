@@ -470,7 +470,6 @@ nnoremap <f4> :ToggleLocationList<cr>
 nnoremap <f9> :ToggleMenu<cr>
 " maximize window size
 nnoremap <leader>z :ToggleWindowSize<cr>
-nnoremap <leader>Z :ToggleFullscreenSize<cr>
 " increase editor font, works only in gui mode
 nnoremap <m-=> :FontIncrease<cr>
 " decrease editor font
