@@ -12,8 +12,8 @@ nvim() {
     nvim=$(which nvim)
     project_name=$(basename $PWD)
     if [ -f ~/.sessions/$project_name.vim ]; then
-        $nvim "+OpenSession $project_name" "$*"
+        $nvim "+OpenSession $project_name" $*
     else
-        $nvim "$*"
+        $nvim $*
     fi
 }

@@ -701,16 +701,24 @@ endfunction
 function! s:location_next()
   try
     lnext
-  catch
-    ll
+  catch /Vim/
+    try
+      ll
+    catch /Vim/
+      echomsg v:exception
+    endtry
   endtry
 endfunction
 
 function! s:location_prev()
   try
     lprev
-  catch
-    ll
+  catch /Vim/
+    try
+      ll
+    catch /Vim/
+      echomsg v:exception
+    endtry
   endtry
 endfunction
 
