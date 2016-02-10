@@ -2,18 +2,18 @@
 [color]
     ui = auto
     grep = auto
-[color "status"]
-    added = 150
-    changed = 180
-    untracked = 174
-    deleted = 96
-[color "diff"]
-    meta = 110
-    frag = 146
-    func = 146
-    new = 150
-    old = 174
-    commit = 180
+; [color "status"]
+;     added = 150
+;     changed = 180
+;     untracked = 174
+;     deleted = 96
+; [color "diff"]
+;     meta = 110
+;     frag = 146
+;     func = 146
+;     new = 150
+;     old = 174
+;     commit = 180
 [user]
     email = kirill.dunaev@gmail.com
     name = Kirill Dunaev

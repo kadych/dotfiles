@@ -1,0 +1,63 @@
+# vim: ft=sh :
+
+background_light() {
+    echo -ne '\e]10;#000000\a'    # foreground
+    echo -ne '\e]11;#e4f1f1\a'    # background
+    # echo -ne '\e]12;#ffa580\a'    # cursor
+    echo -ne '\e]12;#af0000\a'    # cursor
+
+    echo -ne '\e]4;0;#000000\a'   # black
+    echo -ne '\e]4;1;#bf0000\a'   # red
+    echo -ne '\e]4;2;#00bf00\a'   # green
+    echo -ne '\e]4;3;#bfbf00\a'   # yellow
+    echo -ne '\e]4;4;#0000bf\a'   # blue
+    echo -ne '\e]4;5;#bf00bf\a'   # magenta
+    echo -ne '\e]4;6;#00bfbf\a'   # cyan
+    echo -ne '\e]4;7;#bfbfbf\a'   # white (light grey really)
+    echo -ne '\e]4;8;#404040\a'   # bold black (i.e. dark grey)
+    echo -ne '\e]4;9;#ff4040\a'   # bold red
+    echo -ne '\e]4;10;#40ff40\a'  # bold green
+    echo -ne '\e]4;11;#ffff40\a'  # bold yellow
+    echo -ne '\e]4;12;#6060ff\a'  # bold blue
+    echo -ne '\e]4;13;#ff40ff\a'  # bold magenta
+    echo -ne '\e]4;14;#40ffff\a'  # bold cyan
+    echo -ne '\e]4;15;#ffffff\a'  # bold white
+
+    export BACKGROUND=light
+}
+
+background_dark() {
+    echo -ne '\e]10;#d0d0d0\a'    # foreground
+    echo -ne '\e]11;#1c1c1c\a'    # background
+    echo -ne '\e]12;#d7af87\a'    # cursor
+
+    echo -ne '\e]4;0;#000000\a'   # black
+    echo -ne '\e]4;1;#d78787\a'   # red
+    echo -ne '\e]4;2;#87d7af\a'   # green
+    echo -ne '\e]4;3;#ffffaf\a'   # yellow
+    echo -ne '\e]4;4;#87afd7\a'   # blue
+    echo -ne '\e]4;5;#875f87\a'   # magenta
+    echo -ne '\e]4;6;#afafd7\a'   # cyan
+    echo -ne '\e]4;7;#d0d0d0\a'   # white (light grey really)
+    echo -ne '\e]4;8;#000000\a'   # bold black (i.e. dark grey)
+    echo -ne '\e]4;9;#d78787\a'   # bold red
+    echo -ne '\e]4;10;#87d7af\a'  # bold green
+    echo -ne '\e]4;11;#ffffaf\a'  # bold yellow
+    echo -ne '\e]4;12;#87afd7\a'  # bold blue
+    echo -ne '\e]4;13;#875f87\a'  # bold magenta
+    echo -ne '\e]4;14;#afafd7\a'  # bold cyan
+    echo -ne '\e]4;15;#ffffff\a'  # bold white
+
+    export BACKGROUND=dark
+}
+
+background() {
+    case "$1" in
+    light) background_light
+        ;;
+    dark) background_dark
+        ;;
+    *) echo 'background [dark|light]'
+        ;;
+    esac
+}

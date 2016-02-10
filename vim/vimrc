@@ -11,9 +11,8 @@ Plug 'mileszs/ack.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'benekastah/neomake'
 Plug 'majutsushi/tagbar'
-Plug 'bling/vim-airline'
-" Plug 'guns/vim-clojure-static'
-" Plug 'tpope/vim-fireplace'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'xolox/vim-misc'
@@ -23,7 +22,11 @@ Plug 'SirVer/ultisnips'
 Plug 'kadych/vim-python'
 Plug 'kadych/vim-java'
 Plug 'kadych/vim-xoria256'
+" Plug 'kadych/vim-colors-solarized'
+" Plug 'godlygeek/csapprox'
+Plug 'frankier/neovim-colors-solarized-truecolor-only'
 Plug 'nanotech/jellybeans.vim'
+Plug 'endel/vim-github-colorscheme'
 Plug 'fisadev/vim-isort'
 call plug#end()
 filetype plugin indent on
@@ -91,9 +94,9 @@ endif
 if !exists('g:loaded_vimrc') && has('gui_running')
   set encoding=utf-8 " sets the character encoding used inside vim
   " winpos 0 0 " put the gui vim window at the given coordinates
-  set lines=35 " number of lines of the vim window
-  set columns=85 " number of columns of the screen
-  set hlsearch " when there is a previous search pattern, highlight all its matches
+  " set lines=35 " number of lines of the vim window
+  " set columns=85 " number of columns of the screen
+  " set hlsearch " when there is a previous search pattern, highlight all its matches
 endif
 
 syntax on " switches on syntax highlighting
@@ -117,11 +120,21 @@ if has("gui_running")
   endif
 endif
 
-if has('gui_running') || has('unix')
-  let g:colorscheme = 'xoria256'
-else
-  let g:colorscheme = 'elflord'
-endif
+" if has('gui_running') || has('unix')
+"   let g:colorscheme = 'xoria256'
+" else
+"   let g:colorscheme = 'elflord'
+" endif
+
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+
+let $BACKGROUND = $BACKGROUND != '' ? $BACKGROUND : 'dark'
+let g:background = {
+  \ 'light': 'turquoise',
+  \ 'dark': 'xoria256',
+  \ }
+let g:colorscheme = g:background[$BACKGROUND]
 
 try
   execute 'colorscheme '.g:colorscheme
@@ -152,6 +165,7 @@ let g:XkbSwitchEnabled = 1
 let g:XkbSwitchIMappings = ['ru']
 
 let g:vim_isort_map = ''
+let g:solarized_termcolors = 256
 
 let g:session_autoload = 'no'
 let g:session_autosave = 'yes'
@@ -281,7 +295,6 @@ if has('win32')
   let g:virtualenv_directory = 'D:/projects'
 endif
 
-" let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
 " let g:neocomplete#enable_at_startup = 1
 
 if has('win32')
@@ -427,10 +440,10 @@ vnoremap L $
 nnoremap <c-j> :BufferNext<cr>
 nnoremap <c-k> :BufferPrev<cr>
 " quick jumps through the text
-" vnoremap <m-l> 5l
-" nnoremap <m-l> 5l
-" vnoremap <m-h> 5h
-" nnoremap <m-h> 5h
+vnoremap <m-l> 5l
+nnoremap <m-l> 5l
+vnoremap <m-h> 5h
+nnoremap <m-h> 5h
 vnoremap <m-k> 5k
 nnoremap <m-k> 5k
 vnoremap <m-j> 5j

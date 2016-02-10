@@ -41,16 +41,19 @@ if ! shopt -oq posix; then
     fi
 fi
 
-runcommand() {
-    if [ -f $1 ]; then
-        source $1
-    fi
+# set -x
+exec_command() {
+    [[ -f $1 ]] && source $1
 }
 
-runcommand ~/.functionrc
-runcommand ~/.aliasrc
-runcommand ~/.promptrc
-runcommand ~/.envrc
-runcommand ~/.fzfrc
+exec_command ~/.envrc
+exec_command ~/.aliasrc
+exec_command ~/.promptrc
+exec_command ~/.backgroundrc
+exec_command ~/.functionrc
+exec_command ~/.fzfrc
+exec_command ~/.fzf.bash
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+ps1 $BACKGROUND
+background $BACKGROUND
+

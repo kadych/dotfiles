@@ -30,10 +30,33 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+ps1_light() {
+    PS1="\[\e[38;5;19m\]\u@\h\[\e[38;5;124m\]:\[\e[38;5;34m\]\w\[\e[38;5;124m\]$(__git_ps1)\n\$\[\e[38;5;0m\] "
+}
+
+ps1_dark() {
+    PS1="\[\e[38;5;110m\]\u@\h\[\e[38;5;180m\]:\[\e[38;5;150m\]\w\[\e[38;5;180m\]$(__git_ps1)\n\$\[\e[38;5;252m\] "
+}
+
+ps1_nocolor() {
+    PS1="\u@\h:\w$(__git_ps1)\n\$ "
+}
+
+ps1() {
+    case $1 in
+    light) PROMPT_COMMAND=ps1_light
+        ;;
+    dark) PROMPT_COMMAND=ps1_dark
+        ;;
+    *) echo 'ps1 [dark|light]'
+        ;;
+    esac
+}
+
 if [ "$color_prompt" = yes ]; then
-    PS1="\[\033[38;5;146m\]\u@\h\[\033[38;5;180m\]:\[\033[38;5;110m\]\w\[\033[38;5;180m\] \$(__git_ps1 '(%s)')\n\\$\[\033[38;5;252m\] "
+    PROMPT_COMMAND="ps1 $BACKGROUND"
 else
-    PS1="\u@\h:\w $(__git_ps1 '(%s)')\n\\$ "
+    PROMPT_COMMAND=ps1_nocolor
 fi
 
 unset color_prompt force_color_prompt

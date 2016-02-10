@@ -13,8 +13,11 @@ link:
     system/aliasrc: ~/.aliasrc
     system/promptrc: ~/.promptrc
     system/envrc: ~/.envrc
+    system/backgroundrc: ~/.backgroundrc
     system/inputrc: ~/.inputrc
     system/tmux.conf: ~/.tmux.conf
+    system/tmux-light.conf: ~/.tmux-light.conf
+    system/tmux-dark.conf: ~/.tmux-dark.conf
     system/fzfrc: ~/.fzfrc
 
     vim: ~/.vim
