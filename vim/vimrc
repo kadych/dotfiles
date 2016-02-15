@@ -22,12 +22,11 @@ Plug 'SirVer/ultisnips'
 Plug 'kadych/vim-python'
 Plug 'kadych/vim-java'
 Plug 'kadych/vim-xoria256'
-" Plug 'kadych/vim-colors-solarized'
-" Plug 'godlygeek/csapprox'
 Plug 'frankier/neovim-colors-solarized-truecolor-only'
 Plug 'nanotech/jellybeans.vim'
 Plug 'endel/vim-github-colorscheme'
 Plug 'fisadev/vim-isort'
+Plug 'scrooloose/nerdtree'
 call plug#end()
 filetype plugin indent on
 " }}}
@@ -479,6 +478,7 @@ nnoremap <f2> :TagbarToggle<cr>
 nnoremap <f3> :ToggleWindowCopy<cr>
 " show/hide quickfix window
 nnoremap <f4> :ToggleLocationList<cr>
+nnoremap <f5> :NERDTreeToggle<cr>
 " show/hide gui menu
 nnoremap <f9> :ToggleMenu<cr>
 " maximize window size

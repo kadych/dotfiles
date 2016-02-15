@@ -8,7 +8,7 @@ background_light() {
 
     echo -ne '\e]4;0;#000000\a'   # black
     echo -ne '\e]4;1;#bf0000\a'   # red
-    echo -ne '\e]4;2;#00bf00\a'   # green
+    echo -ne '\e]4;2;#00af00\a'   # green
     echo -ne '\e]4;3;#bfbf00\a'   # yellow
     echo -ne '\e]4;4;#0000bf\a'   # blue
     echo -ne '\e]4;5;#bf00bf\a'   # magenta
@@ -31,9 +31,9 @@ background_dark() {
     echo -ne '\e]11;#1c1c1c\a'    # background
     echo -ne '\e]12;#d7af87\a'    # cursor
 
-    echo -ne '\e]4;0;#000000\a'   # black
+    echo -ne '\e]4;0;#121212\a'   # black
     echo -ne '\e]4;1;#d78787\a'   # red
-    echo -ne '\e]4;2;#87d7af\a'   # green
+    echo -ne '\e]4;2;#afd787\a'   # green
     echo -ne '\e]4;3;#ffffaf\a'   # yellow
     echo -ne '\e]4;4;#87afd7\a'   # blue
     echo -ne '\e]4;5;#875f87\a'   # magenta
@@ -41,7 +41,7 @@ background_dark() {
     echo -ne '\e]4;7;#d0d0d0\a'   # white (light grey really)
     echo -ne '\e]4;8;#000000\a'   # bold black (i.e. dark grey)
     echo -ne '\e]4;9;#d78787\a'   # bold red
-    echo -ne '\e]4;10;#87d7af\a'  # bold green
+    echo -ne '\e]4;10;#afd787\a'  # bold green
     echo -ne '\e]4;11;#ffffaf\a'  # bold yellow
     echo -ne '\e]4;12;#87afd7\a'  # bold blue
     echo -ne '\e]4;13;#875f87\a'  # bold magenta

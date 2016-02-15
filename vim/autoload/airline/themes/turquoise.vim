@@ -8,7 +8,7 @@ function! airline#themes#turquoise#refresh()
   let s:base03  = {'t': 234, 'g': '#002b36'}
   let s:base02  = {'t': 235, 'g': '#073642'}
   let s:base01  = {'t': 240, 'g': '#586e75'}
-  let s:base00  = {'t': 241, 'g': '#657b83'}
+  let s:base00  = {'t': 241, 'g': '#5f8787'}
   let s:base0   = {'t': 244, 'g': '#839496'}
   let s:base1   = {'t': 245, 'g': '#93a1a1'}
   let s:base2   = {'t': 254, 'g': '#e4f1f1'}
