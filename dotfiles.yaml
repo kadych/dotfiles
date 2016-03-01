@@ -19,12 +19,17 @@ link:
     system/tmux-light.conf: ~/.tmux-light.conf
     system/tmux-dark.conf: ~/.tmux-dark.conf
     system/fzfrc: ~/.fzfrc
+    system/fzf.bash: ~/.fzf.bash
+    system/fzf.zsh: ~/.fzf.zsh
 
-    vim: ~/.vim
-    vim: ~/.config/nvim
+    vim:
+        - ~/.config/nvim
+        - ~/.vim
     vim/vimrc: ~/.config/nvim/init.vim
 
     pudb: ~/.config/pudb
+
+    ipython: ~/.ipython
 
     desktop/terminalrc: ~/.config/xfce4/terminal/terminalrc
     desktop/accels.scm: ~/.config/xfce4/terminal/accels.scm

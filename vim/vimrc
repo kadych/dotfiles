@@ -455,6 +455,7 @@ endi
 " goto next/previous error in the list
 nnoremap <m-n> :LocationNext<cr>
 nnoremap <m-p> :LocationPrev<cr>
+nnoremap <leader>b :ls<cr>:b<space>
 " window manipulation hotkeys
 nnoremap <leader>wj :wincmd j<cr>
 nnoremap <leader>wk :wincmd k<cr>
