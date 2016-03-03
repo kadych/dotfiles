@@ -21,7 +21,7 @@ hi Statement    guifg=black gui=bold
 hi PreProc      guifg=darkmagenta 
 hi Type         guifg=black 
 hi Special      guifg=black 
-hi Error        guifg=yellow guibg=red  
+hi Error        guifg=#e4f1f1 guibg=red  
 hi Todo         guifg=black guibg=orange  
 hi Function     guifg=black gui=bold
 

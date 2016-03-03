@@ -135,6 +135,42 @@ let g:background = {
   \ }
 let g:colorscheme = g:background[$BACKGROUND]
 
+if $BACKGROUND == 'light'
+  let g:terminal_color_0  = '#000000'  " black
+  let g:terminal_color_1  = '#af0000'  " red
+  let g:terminal_color_2  = '#00af00'  " green
+  let g:terminal_color_3  = '#afaf00'  " yellow
+  let g:terminal_color_4  = '#0000af'  " blue
+  let g:terminal_color_5  = '#af00af'  " magenta
+  let g:terminal_color_6  = '#00afaf'  " cyan
+  let g:terminal_color_7  = '#afafaf'  " white (light grey really)
+  let g:terminal_color_8  = '#404040'  " bold black (i.e. dark grey)
+  let g:terminal_color_9  = '#af0000'  " bold red
+  let g:terminal_color_10 = '#00af00'  " bold green
+  let g:terminal_color_11 = '#afaf00'  " bold yellow
+  let g:terminal_color_12 = '#0000af'  " bold blue
+  let g:terminal_color_13 = '#af00af'  " bold magenta
+  let g:terminal_color_14 = '#00afaf'  " bold cyan
+  let g:terminal_color_15 = '#ffffff'  " bold white
+elseif $BACKGROUND == 'dark'
+  let g:terminal_color_0  = '#121212'  " black
+  let g:terminal_color_1  = '#d78787'  " red
+  let g:terminal_color_2  = '#afd787'  " green
+  let g:terminal_color_3  = '#ffffaf'  " yellow
+  let g:terminal_color_4  = '#87afd7'  " blue
+  let g:terminal_color_5  = '#875f87'  " magenta
+  let g:terminal_color_6  = '#afafd7'  " cyan
+  let g:terminal_color_7  = '#d0d0d0'  " white (light grey really)
+  let g:terminal_color_8  = '#000000'  " bold black (i.e. dark grey)
+  let g:terminal_color_9  = '#d78787'  " bold red
+  let g:terminal_color_10 = '#87d7af'  " bold green
+  let g:terminal_color_11 = '#ffffaf'  " bold yellow
+  let g:terminal_color_12 = '#87afd7'  " bold blue
+  let g:terminal_color_13 = '#875f87'  " bold magenta
+  let g:terminal_color_14 = '#afafd7'  " bold cyan
+  let g:terminal_color_15 = '#ffffff'  " bold white
+endif
+
 try
   execute 'colorscheme '.g:colorscheme
 catch /Vim/
@@ -600,8 +636,13 @@ endfunction
 
 function! s:toggle_window_size(fullscreen)
   if has('win32') && has('gui_running')
-    let libvimuser = $VIMRUNTIME.'/libvimuser.dll'
-    let result = libcall(libvimuser, 'show_window', v:windowid)
+    if a:fullscreen
+      let libpath = $VIMRUNTIME.'/gvimfullscreen.dll'
+      let result = libcallnr(libpath, 'ToggleFullScreen', 0)
+    else
+      let libpath = $VIMRUNTIME.'/libvimuser.dll'
+      let result = libcall(libpath, 'show_window', v:windowid)
+    endif
     wincmd =
   elseif has('unix')
     if a:fullscreen
@@ -609,6 +650,7 @@ function! s:toggle_window_size(fullscreen)
     else
       silent execute '!wmctrl -r :ACTIVE: -b toggle,maximized_horz,maximized_vert'
     endif
+    wincmd =
   endif
 endfunction
 
