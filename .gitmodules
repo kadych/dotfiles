@@ -1,0 +1,3 @@
+[submodule "dotty"]
+	path = dotty
+	url = git@github.com:kadych/dotty.git
