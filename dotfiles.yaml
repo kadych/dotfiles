@@ -27,7 +27,7 @@ link:
     vim:
         - ~/.config/nvim
         - ~/.vim
-    vim/vimrc: ~/.config/nvim/init.vim
+    vim/vimrc: vim/init.vim
 
     pudb: ~/.config/pudb
 
