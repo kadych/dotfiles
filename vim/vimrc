@@ -428,6 +428,7 @@ if exists(':terminal')
     autocmd FileType terminal nnoremap <buffer> <c-k> <nop>
   augroup END
 endif
+
 " }}}
 " {{{ Mappings
 " hide search highlighting

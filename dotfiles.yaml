@@ -21,8 +21,6 @@ link:
     system/tmux-light.conf: ~/.tmux-light.conf
     system/tmux-dark.conf: ~/.tmux-dark.conf
     system/fzfrc: ~/.fzfrc
-    system/fzf.bash: ~/.fzf.bash
-    system/fzf.zsh: ~/.fzf.zsh
 
     vim:
         - ~/.config/nvim

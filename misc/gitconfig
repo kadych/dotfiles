@@ -19,3 +19,7 @@
     name = Kirill Dunaev
 [push]
 	default = matching
+[diff]
+    tool = nvimdiff
+[merge]
+    tool = nvimdiff
