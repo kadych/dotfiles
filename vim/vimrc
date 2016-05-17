@@ -5,7 +5,7 @@ set nocompatible
 
 filetype off
 call plug#begin(g:plugin_bundle)
-" Plug 'mileszs/ack.vim'
+Plug 'mileszs/ack.vim'
 " Plug 'kien/ctrlp.vim'
 " Plug 'scrooloose/syntastic'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -24,7 +24,7 @@ Plug 'kadych/vim-python'
 Plug 'kadych/vim-xoria256'
 " Plug 'nanotech/jellybeans.vim'
 Plug 'fisadev/vim-isort'
-" Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree'
 call plug#end()
 filetype plugin indent on
 " }}}
@@ -48,7 +48,7 @@ set completeopt=menu,preview,longest " list of options for Insert mode completio
 " preview - show extra information about the current selected completion
 " longest - only insert the longest common text of the matches
 set number " print the line number in front of each line
-set clipboard=unnamedplus " will use the clipboard register '*' for all yank
+set clipboard=unnamed " will use the clipboard register '*' for all yank
 " set clipboard=unnamed,unnamedplus " will use the clipboard register '*' for all yank
 set t_vb= " visual bell off
 set backspace=indent,eol,start " influences the working of <bs>,<del>,<ctrl-w>
@@ -125,9 +125,6 @@ endif
 "   let g:colorscheme = 'elflord'
 " endif
 
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-
 let $BACKGROUND = $BACKGROUND != '' ? $BACKGROUND : 'dark'
 let g:background = {
   \ 'light': 'turquoise',
@@ -189,6 +186,9 @@ let fileencoding = &enc
 let termencoding = &enc
 let python_highlight_all = 1
 let pascal_pascal = 1
+
+let g:loaded_netrw = 1
+let g:loaded_netrwPlugin = 1
 
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
@@ -400,6 +400,7 @@ augroup programming
   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 
   autocmd FileType python,jproperties setlocal commentstring=#\ %s
+  autocmd FileType debcontrol setlocal commentstring=#\ %s
   autocmd FileType c,cpp,cpp11,pascal,groovy,java setlocal commentstring=//\ %s
   autocmd FileType javascript setlocal commentstring=/*\ %s\ */
   autocmd FileType plsql setlocal commentstring=--\ %s
@@ -484,6 +485,14 @@ vnoremap <m-k> 5k
 nnoremap <m-k> 5k
 vnoremap <m-j> 5j
 nnoremap <m-j> 5j
+vnoremap ¬ 5l
+nnoremap ¬ 5l
+vnoremap ˙ 5h
+nnoremap ˙ 5h
+vnoremap ˚ 5k
+nnoremap ˚ 5k
+vnoremap ∆ 5j
+nnoremap ∆ 5j
 " unix terminal patch
 if has('unix') && !has('nvim')
   execute "set <m-j>=\ej"
@@ -596,6 +605,8 @@ function! s:open_buffer(buffer_num)
   endif
 endfunction
 
+let s:nerd_buffer_pattern = '^NERD_'
+
 let s:term_buffer_pattern = '^term://'
 
 function! s:find_term_buffer()
@@ -603,6 +614,7 @@ function! s:find_term_buffer()
 endfunction
 
 let s:help_buffer_pattern = '[\\/]runtime[\\/]doc[\\/][^.]\+\.txt$'
+let s:bundle_help_buffer_pattern = '[\\/].bundle[\\/][^\\/]\+[\\/]doc[\\/][^.]\+\.txt$'
 
 function! s:find_help_buffer()
   return s:get_buffer_num(s:help_buffer_pattern)
@@ -877,7 +889,12 @@ function! s:match_patterns(s, patterns)
 endfunction
 
 function! s:is_valid_bufname(s)
-  return !s:match_patterns(a:s, [s:help_buffer_pattern, s:term_buffer_pattern])
+  return !s:match_patterns(a:s, [ 
+              \ s:help_buffer_pattern,
+              \ s:bundle_help_buffer_pattern,
+              \ s:term_buffer_pattern,
+              \ s:nerd_buffer_pattern,
+              \ ])
 endfunction
 
 function! s:find_buffer(bufnr_list)
