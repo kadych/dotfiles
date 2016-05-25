@@ -46,9 +46,9 @@ exec_command() {
     [[ -f $1 ]] && source $1
 }
 
+exec_command ~/.git-prompt.sh
 exec_command ~/.envrc
 exec_command ~/.aliasrc
-exec_command ~/.git-prompt.sh
 exec_command ~/.promptrc
 exec_command ~/.backgroundrc
 exec_command ~/.functionrc
@@ -56,5 +56,5 @@ exec_command ~/.fzfrc
 exec_command ~/.fzf.bash
 
 ps1 $BACKGROUND
-background $BACKGROUND
+# background $BACKGROUND
 
