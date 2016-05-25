@@ -6,6 +6,7 @@ set nocompatible
 filetype off
 call plug#begin(g:plugin_bundle)
 Plug 'mileszs/ack.vim'
+Plug 'romainl/vim-qf'
 " Plug 'kien/ctrlp.vim'
 " Plug 'scrooloose/syntastic'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -48,7 +49,7 @@ set completeopt=menu,preview,longest " list of options for Insert mode completio
 " preview - show extra information about the current selected completion
 " longest - only insert the longest common text of the matches
 set number " print the line number in front of each line
-set clipboard=unnamed " will use the clipboard register '*' for all yank
+set clipboard=unnamedplus " will use the clipboard register '*' for all yank
 " set clipboard=unnamed,unnamedplus " will use the clipboard register '*' for all yank
 set t_vb= " visual bell off
 set backspace=indent,eol,start " influences the working of <bs>,<del>,<ctrl-w>
@@ -485,14 +486,6 @@ vnoremap <m-k> 5k
 nnoremap <m-k> 5k
 vnoremap <m-j> 5j
 nnoremap <m-j> 5j
-vnoremap ¬ 5l
-nnoremap ¬ 5l
-vnoremap ˙ 5h
-nnoremap ˙ 5h
-vnoremap ˚ 5k
-nnoremap ˚ 5k
-vnoremap ∆ 5j
-nnoremap ∆ 5j
 " unix terminal patch
 if has('unix') && !has('nvim')
   execute "set <m-j>=\ej"
@@ -534,6 +527,15 @@ nnoremap <leader>z :ToggleWindowSize<cr>
 nnoremap <m-=> :FontIncrease<cr>
 " decrease editor font
 nnoremap <m--> :FontDecrease<cr>
+"
+" copy the current text selection to the system clipboard
+if has('gui_running') || has('nvim') && exists('$DISPLAY')
+  noremap <leader>y "+y
+else
+  " copy to attached terminal using the yank(1) script:
+  " https://github.com/sunaku/home/blob/master/bin/yank
+  noremap <silent> <leader>y y:call system('$HOME/.yank.sh > /dev/tty', @0)<return>
+endif
 
 if exists(':tnoremap')
   " maps Esc to exit from terminal mode (NeoVim)
@@ -715,7 +717,7 @@ endfunction
 
 function! s:toggle_location_list()
   let curbufnr = winbufnr(0)
-  for bufnum in map(filter(split(s:get_bugger_list(), '\n'), 'v:val =~ "Location List"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
+  for bufnum in map(filter(split(s:get_bugger_list(), '\n'), 'v:val =~ "Quickfix List"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
     if curbufnr == bufnum
       lclose
       return
@@ -899,7 +901,7 @@ endfunction
 
 function! s:find_buffer(bufnr_list)
   for i in a:bufnr_list
-    if bufexists(i) && s:is_valid_bufname(bufname(i))
+    if buflisted(i) && s:is_valid_bufname(bufname(i))
       return i
     endif
   endfor
