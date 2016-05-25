@@ -48,6 +48,7 @@ exec_command() {
 
 exec_command ~/.envrc
 exec_command ~/.aliasrc
+exec_command ~/.git-prompt.sh
 exec_command ~/.promptrc
 exec_command ~/.backgroundrc
 exec_command ~/.functionrc
