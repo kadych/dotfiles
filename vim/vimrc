@@ -188,6 +188,8 @@ let termencoding = &enc
 let python_highlight_all = 1
 let pascal_pascal = 1
 
+let NERDTreeIgnore = ['.pyc$[[file]]']
+
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
 
@@ -504,6 +506,7 @@ nnoremap <leader>wH :wincmd H<cr>
 nnoremap <leader>wL :wincmd L<cr>
 nnoremap <leader>we :wincmd =<cr>
 nnoremap <leader>wd :BufferDelete<cr>
+nnoremap <leader>wD :BufferDeleteExceptCurrent<cr>
 nnoremap <leader>wo :only<cr>
 nnoremap <leader>wc :quit<cr>
 nnoremap <leader>w, :wincmd p<cr>
@@ -936,6 +939,15 @@ function! s:buffer_delete()
     execute 'bwipeout! '.num
   endif
 endfunction
+
+function! s:buffer_delete_except_current()
+  let num = bufnr('%')
+  for i in range(1, bufnr('$'))
+    if i != num && buflisted(i)
+      execute 'bwipeout! '.i
+    endif
+  endfor
+endfunction
 " }}}
 " {{{ User Defined Commands
 command! ToggleQuickfixList call s:toggle_quickfix_list()
@@ -953,6 +965,7 @@ command! FontDecrease call s:font_decrease()
 command! BufferNext call s:buffer_next()
 command! BufferPrev call s:buffer_prev()
 command! BufferDelete call s:buffer_delete()
+command! BufferDeleteExceptCurrent call s:buffer_delete_except_current()
 " }}}
 " {{{ Menu Definition
 set wildmenu
