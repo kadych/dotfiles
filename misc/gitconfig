@@ -15,7 +15,7 @@
 ;     old = 174
 ;     commit = 180
 [user]
-    email = kirill.dunaev@gmail.com
+    email = kdunaev@yandex-team.ru
     name = Kirill Dunaev
 [push]
 	default = matching

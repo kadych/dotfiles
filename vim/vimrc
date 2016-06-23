@@ -1,4 +1,5 @@
 " vim: set sw=2 sts=2 ts=2 ff=unix et:
+" текст написанный по-русски
 " {{{ Plugin List
 let g:plugin_bundle='~/.bundle'
 set nocompatible
@@ -86,6 +87,7 @@ set printoptions=number:y,syntax:n " recognize the format of the output of ':har
 set ttimeoutlen=50 " time in milliseconds that is waited for a key code or mapped key sequence to complete
 set cursorline " show cursor line
 set mouse=a " enable the use of the mouse
+set termguicolors
 
 if has('unix') && !has('nvim')
   set ttymouse=xterm2
@@ -188,7 +190,7 @@ let termencoding = &enc
 let python_highlight_all = 1
 let pascal_pascal = 1
 
-let NERDTreeIgnore = ['.pyc$[[file]]']
+let g:NERDTreeIgnore = ['.pyc$[[file]]',  '.o$[[file]]']
 
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
@@ -443,8 +445,8 @@ nnoremap <c-s-tab> gT
 " invoke FZF command-line fuzzy finder
 nnoremap <c-p> :FZF<cr>
 nnoremap <leader>jn :Neomake<cr>
-" map language switch to ctrl+space
-inoremap <c-@> <c-O>:let &iminsert=abs(&iminsert - 1)<cr>
+" map language switch to meta-space
+inoremap <m-space> <c-O>:let &iminsert=abs(&iminsert - 1)<cr>
 " move current line downward
 nnoremap - ddp
 " move current line upward
