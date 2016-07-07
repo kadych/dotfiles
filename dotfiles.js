@@ -46,7 +46,7 @@
         "misc/ctags.cnf": "~/.ctags",
         "misc/pylintrc": "~/.pylintrc",
         "misc/gitconfig": "~/.gitconfig",
-        "misc/kdiff3rc": "~/.kdiff3rc"
+        "misc/kdiff3rc": "~/.kdiff3rc",
         "misc/pep8": "~/.config/pep8"
     }
 }
