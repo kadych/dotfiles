@@ -27,3 +27,5 @@
     tool = nvimdiff
 [mergetool "nvimdiff"]
         cmd = nvim -d \"$LOCAL\" \"$REMOTE\" \"MERGED\"
+[core]
+	excludesfile = /home/kdunaev/.global_ignore
