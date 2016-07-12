@@ -37,6 +37,10 @@ treload() {
     fi
 }
 
+tssh() {
+    ssh $* -t "LC_ALL= tmux new-session -A -s main"
+}
+
 light() {
     background light
     ps1 light
