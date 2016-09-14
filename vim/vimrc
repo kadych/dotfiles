@@ -41,7 +41,7 @@ set expandtab " use the appropriate number of spaces to insert a <tab>
 set autoindent " copy indent from current line when starting a new line
 set showcmd " show typing commmand
 set noshowmode " don't show current mode
-" set nomodeline " disable modeline
+set modeline " disable modeline
 set complete=.,k,b,t " scpecifies how keyworkd completion 'ins-completions' works
 " . - scan the current buffer
 " k - scan files given with the 'dictionary' option
@@ -389,6 +389,7 @@ augroup programming
 
   autocmd FileType python nmap <buffer> <leader>jo :Isort<cr>
   autocmd FileType python vmap <buffer> <leader>jo :Isort<cr>
+  autocmd FileType python setlocal et sts=4 ts=4 sw=4
 
   autocmd FileType groovy nmap <buffer> <f7> :make<cr>
 
@@ -412,10 +413,10 @@ augroup programming
   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 
   autocmd FileType python,jproperties setlocal commentstring=#\ %s
-  autocmd FileType debcontrol setlocal commentstring=#\ %s
-  autocmd FileType c,cpp,cpp11,pascal,groovy,java setlocal commentstring=//\ %s
-  autocmd FileType javascript setlocal commentstring=/*\ %s\ */
-  autocmd FileType plsql setlocal commentstring=--\ %s
+  autocmd FileType debcontrol,nginx setlocal commentstring=#\ %s
+  autocmd FileType c,cpp,cpp11,pascal,groovy,java,javascript setlocal commentstring=//\ %s
+  autocmd FileType css setlocal commentstring=/*\ %s\ */
+  autocmd FileType plsql,sql setlocal commentstring=--\ %s
   autocmd FileType dosbatch setlocal commentstring=REM\ %s
   autocmd FileType htmldjango setlocal commentstring={#\ %s\ #}
 
@@ -523,14 +524,6 @@ nnoremap <f8> :Neomake<cr>
 nnoremap <f9> :ToggleMenu<cr>
 " maximize window size
 nnoremap <leader>z :ToggleWindowSize<cr>
-" copy the current text selection to the system clipboard
-if has('gui_running') || has('nvim') && exists('$DISPLAY')
-  noremap <leader>y "+y
-else
-  " copy to attached terminal using the yank(1) script:
-  " https://github.com/sunaku/home/blob/master/bin/yank
-  noremap <silent> <leader>y y:call system('$HOME/.yank.sh > /dev/tty', @0)<return>
-endif
 
 if exists(':tnoremap')
   " maps Esc to exit from terminal mode (NeoVim)
