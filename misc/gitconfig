@@ -29,3 +29,7 @@
         cmd = nvim -d \"$LOCAL\" \"$REMOTE\" \"MERGED\"
 [core]
 	excludesfile = /home/kdunaev/.global_ignore
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
