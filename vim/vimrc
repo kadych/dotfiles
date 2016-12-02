@@ -189,7 +189,7 @@ let termencoding = &enc
 let python_highlight_all = 1
 let pascal_pascal = 1
 
-let g:NERDTreeIgnore = ['.pyc$[[file]]',  '.o$[[file]]']
+let g:NERDTreeIgnore = ['.pyc$[[file]]',  '.o$[[file]]', '__pycache__$[[dir]]', '.egg-info$[[dir]]']
 
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
@@ -389,7 +389,7 @@ augroup programming
 
   autocmd FileType python nmap <buffer> <leader>jo :Isort<cr>
   autocmd FileType python vmap <buffer> <leader>jo :Isort<cr>
-  autocmd FileType python setlocal et sts=4 ts=4 sw=4
+  autocmd FileType python set et sts=4 ts=4 sw=4
 
   autocmd FileType groovy nmap <buffer> <f7> :make<cr>
 
@@ -419,6 +419,7 @@ augroup programming
   autocmd FileType plsql,sql setlocal commentstring=--\ %s
   autocmd FileType dosbatch setlocal commentstring=REM\ %s
   autocmd FileType htmldjango setlocal commentstring={#\ %s\ #}
+  autocmd BufEnter requirements.txt setlocal commentstring=#\ %s
 
   autocmd FileType help nnoremap <buffer> <c-j> <nop>
   autocmd FileType help nnoremap <buffer> <c-k> <nop>
