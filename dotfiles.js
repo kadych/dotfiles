@@ -25,6 +25,7 @@
         "system/fzfrc": "~/.fzfrc",
         "system/yank.sh": "~/.yank.sh",
         "system/git-prompt.sh": "~/.git-prompt.sh",
+        "system/git-flow-completion.bash": "~/.git-flow-completion.bash",
 
         "vim": [
             "~/.config/nvim",

@@ -7,12 +7,13 @@ set nocompatible
 filetype off
 call plug#begin(g:plugin_bundle)
 Plug 'mileszs/ack.vim'
+" Plug 'Numkil/ag.nvim'
 Plug 'romainl/vim-qf'
-" Plug 'kien/ctrlp.vim'
+Plug 'kien/ctrlp.vim'
 " Plug 'scrooloose/syntastic'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'benekastah/neomake'
-" Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-commentary'
@@ -26,7 +27,7 @@ Plug 'kadych/vim-python'
 " Plug 'kadych/vim-java'
 Plug 'kadych/vim-xoria256'
 " Plug 'nanotech/jellybeans.vim'
-Plug 'fisadev/vim-isort'
+" Plug 'fisadev/vim-isort'
 Plug 'scrooloose/nerdtree'
 Plug 'craigemery/vim-autotag'
 call plug#end()
@@ -41,7 +42,7 @@ set expandtab " use the appropriate number of spaces to insert a <tab>
 set autoindent " copy indent from current line when starting a new line
 set showcmd " show typing commmand
 set noshowmode " don't show current mode
-" set nomodeline " disable modeline
+set modeline " disable modeline
 set complete=.,k,b,t " scpecifies how keyworkd completion 'ins-completions' works
 " . - scan the current buffer
 " k - scan files given with the 'dictionary' option
@@ -87,6 +88,8 @@ set ttimeoutlen=50 " time in milliseconds that is waited for a key code or mappe
 set cursorline " show cursor line
 set mouse=a " enable the use of the mouse
 set termguicolors
+set hlsearch
+set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
 
 if has('unix') && !has('nvim')
   set ttymouse=xterm2
@@ -180,6 +183,20 @@ if has('unix') && !has('nvim')
   execute 'set <m-j>=\ej'
   execute 'set <m-k>=\ek'
 endif
+
+" cursor shape in insert/normal mode
+if !has('nvim') && !has('gui_running')
+  if exists('$TMUX')
+    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+    let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+  else
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+    let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+  endif
+endif
+
 " }}}
 " {{{ Plugin Variables
 let g:user = 'Kirill Dunaev'
@@ -189,7 +206,8 @@ let termencoding = &enc
 let python_highlight_all = 1
 let pascal_pascal = 1
 
-let g:NERDTreeIgnore = ['.pyc$[[file]]',  '.o$[[file]]']
+let g:NERDTreeIgnore = ['.pyc$[[file]]',  '.o$[[file]]', '__pycache__$[[dir]]', '.egg-info$[[dir]]']
+let g:qf_mapping_ack_style = 1
 
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
@@ -389,6 +407,7 @@ augroup programming
 
   autocmd FileType python nmap <buffer> <leader>jo :Isort<cr>
   autocmd FileType python vmap <buffer> <leader>jo :Isort<cr>
+  autocmd FileType python set et sts=4 ts=4 sw=4
 
   autocmd FileType groovy nmap <buffer> <f7> :make<cr>
 
@@ -412,12 +431,13 @@ augroup programming
   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 
   autocmd FileType python,jproperties setlocal commentstring=#\ %s
-  autocmd FileType debcontrol setlocal commentstring=#\ %s
-  autocmd FileType c,cpp,cpp11,pascal,groovy,java setlocal commentstring=//\ %s
-  autocmd FileType javascript setlocal commentstring=/*\ %s\ */
-  autocmd FileType plsql setlocal commentstring=--\ %s
+  autocmd FileType debcontrol,nginx setlocal commentstring=#\ %s
+  autocmd FileType c,cpp,cpp11,pascal,groovy,java,javascript setlocal commentstring=//\ %s
+  autocmd FileType css setlocal commentstring=/*\ %s\ */
+  autocmd FileType plsql,sql setlocal commentstring=--\ %s
   autocmd FileType dosbatch setlocal commentstring=REM\ %s
   autocmd FileType htmldjango setlocal commentstring={#\ %s\ #}
+  autocmd BufEnter requirements.txt setlocal commentstring=#\ %s
 
   autocmd FileType help nnoremap <buffer> <c-j> <nop>
   autocmd FileType help nnoremap <buffer> <c-k> <nop>
@@ -459,6 +479,8 @@ nnoremap <leader>ve :edit $MYVIMRC<cr>
 nnoremap <leader>vu :UltiSnipsEdit<cr>
 " execute .vimrc file
 nnoremap <leader>vs :source $MYVIMRC<cr>
+" ag search
+nnoremap <leader>/ :<c-u>Ack <c-r><c-w> 
 " disable ex mode
 nnoremap Q <nop>
 " goto begin of current line
@@ -498,19 +520,23 @@ nnoremap <m-n> :LocationNext<cr>
 nnoremap <m-p> :LocationPrev<cr>
 nnoremap <leader>b :ls<cr>:b<space>
 " window manipulation hotkeys
-nnoremap <leader>wj :wincmd j<cr>
-nnoremap <leader>wk :wincmd k<cr>
-nnoremap <leader>wh :wincmd h<cr>
-nnoremap <leader>wl :wincmd l<cr>
-nnoremap <leader>wH :wincmd H<cr>
-nnoremap <leader>wL :wincmd L<cr>
-nnoremap <leader>we :wincmd =<cr>
+nnoremap <leader>wj <c-w>j
+nnoremap <leader>wk <c-w>k
+nnoremap <leader>wh <c-w>h
+nnoremap <leader>wl <c-w>l
+nnoremap <leader>wH <c-w>H
+nnoremap <leader>wL <c-w>L
+nnoremap <leader>we <c-w>e
 nnoremap <leader>wd :BufferDelete<cr>
 nnoremap <leader>wD :BufferDeleteExceptCurrent<cr>
 nnoremap <leader>wo :only<cr>
 nnoremap <leader>wc :quit<cr>
-nnoremap <leader>w, :wincmd p<cr>
+nnoremap <leader>w, <c-w>p
 nnoremap <leader>wt :ToggleTerminal<cr>
+nnoremap <tab> <c-w>w
+
+" redraw screen
+nnoremap <leader>r :redraw!<cr>
 " write current buffer
 nnoremap <leader>s :write<cr>
 " show help window
@@ -523,14 +549,6 @@ nnoremap <f8> :Neomake<cr>
 nnoremap <f9> :ToggleMenu<cr>
 " maximize window size
 nnoremap <leader>z :ToggleWindowSize<cr>
-" copy the current text selection to the system clipboard
-if has('gui_running') || has('nvim') && exists('$DISPLAY')
-  noremap <leader>y "+y
-else
-  " copy to attached terminal using the yank(1) script:
-  " https://github.com/sunaku/home/blob/master/bin/yank
-  noremap <silent> <leader>y y:call system('$HOME/.yank.sh > /dev/tty', @0)<return>
-endif
 
 if exists(':tnoremap')
   " maps Esc to exit from terminal mode (NeoVim)

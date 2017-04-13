@@ -54,7 +54,11 @@ exec_command ~/.backgroundrc
 exec_command ~/.functionrc
 exec_command ~/.fzfrc
 exec_command ~/.fzf.bash
+exec_command ~/.git-flow-completion.bash
 
 ps1 $BACKGROUND
 # background $BACKGROUND
 
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
