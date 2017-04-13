@@ -24,7 +24,7 @@ tmain() {
         tmux setenv -g BACKGROUND $BACKGROUND
         tmux source ~/.tmux.conf
     fi
-    tmux new-session -A -s main
+    tmux new-session -A -s kdunaev-main
 }
 
 treload() {
@@ -38,7 +38,7 @@ treload() {
 }
 
 tssh() {
-    ssh $* -t "LC_ALL= tmux new-session -A -s main"
+    ssh $* -t "LC_ALL= tmux new-session -A -s kdunaev-main"
 }
 
 light() {

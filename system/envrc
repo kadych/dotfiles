@@ -30,7 +30,7 @@
 M2_HOME=/opt/maven
 GOROOT=/opt/go
 GOPATH=~/projects/gopath
-EDITOR=nvim
+EDITOR=vim
 TZ=/usr/share/zoneinfo/Europe/Moscow
 NO_AT_BRIDGE=1
 # LC_ALL=
