@@ -30,6 +30,7 @@ Plug 'kadych/vim-xoria256'
 " Plug 'fisadev/vim-isort'
 Plug 'scrooloose/nerdtree'
 Plug 'craigemery/vim-autotag'
+Plug 'sheerun/vim-polyglot'
 call plug#end()
 filetype plugin indent on
 " }}}
@@ -56,6 +57,9 @@ set number " print the line number in front of each line
 set clipboard=unnamedplus " will use the clipboard register '*' for all yank
 " set clipboard=unnamed,unnamedplus " will use the clipboard register '*' for all yank
 set t_vb= " visual bell off
+if exists('+belloff')
+set belloff=all
+endif
 set backspace=indent,eol,start " influences the working of <bs>,<del>,<ctrl-w>
 " indent - allow backspacing over autoindent
 " eol    - allow backspacing over line breaks (join lines)
@@ -87,7 +91,9 @@ set printoptions=number:y,syntax:n " recognize the format of the output of ':har
 set ttimeoutlen=50 " time in milliseconds that is waited for a key code or mapped key sequence to complete
 set cursorline " show cursor line
 set mouse=a " enable the use of the mouse
+if exists('+termguicolors')
 set termguicolors
+endif
 set hlsearch
 set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
 
@@ -188,11 +194,15 @@ endif
 if !has('nvim') && !has('gui_running')
   if exists('$TMUX')
     let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-    let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+    if exists('+t_SR')
+      let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+    endif
     let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
   else
     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+    if exists('+t_SR')
+      let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+    endif
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
   endif
 endif
@@ -206,7 +216,12 @@ let termencoding = &enc
 let python_highlight_all = 1
 let pascal_pascal = 1
 
-let g:NERDTreeIgnore = ['.pyc$[[file]]',  '.o$[[file]]', '__pycache__$[[dir]]', '.egg-info$[[dir]]']
+let g:NERDTreeIgnore = [
+  \ '__pycache__$[[dir]]', 
+  \ '\.egg-info$[[dir]]',
+  \ '\.pyc$[[file]]',  
+  \ '\.o$[[file]]', 
+  \ ]
 let g:qf_mapping_ack_style = 1
 
 let g:loaded_netrw = 1
@@ -431,7 +446,7 @@ augroup programming
   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 
   autocmd FileType python,jproperties setlocal commentstring=#\ %s
-  autocmd FileType debcontrol,nginx setlocal commentstring=#\ %s
+  autocmd FileType upstart,debcontrol,nginx setlocal commentstring=#\ %s
   autocmd FileType c,cpp,cpp11,pascal,groovy,java,javascript setlocal commentstring=//\ %s
   autocmd FileType css setlocal commentstring=/*\ %s\ */
   autocmd FileType plsql,sql setlocal commentstring=--\ %s
@@ -526,7 +541,7 @@ nnoremap <leader>wh <c-w>h
 nnoremap <leader>wl <c-w>l
 nnoremap <leader>wH <c-w>H
 nnoremap <leader>wL <c-w>L
-nnoremap <leader>we <c-w>e
+nnoremap <leader>we <c-w>=
 nnoremap <leader>wd :BufferDelete<cr>
 nnoremap <leader>wD :BufferDeleteExceptCurrent<cr>
 nnoremap <leader>wo :only<cr>
