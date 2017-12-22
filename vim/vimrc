@@ -31,6 +31,8 @@ Plug 'kadych/vim-xoria256'
 Plug 'scrooloose/nerdtree'
 Plug 'craigemery/vim-autotag'
 Plug 'sheerun/vim-polyglot'
+" Plug 'cocopon/vaffle.vim'
+Plug 'mhinz/vim-startify'
 call plug#end()
 filetype plugin indent on
 " }}}
@@ -54,8 +56,7 @@ set completeopt=menu,preview,longest " list of options for Insert mode completio
 " preview - show extra information about the current selected completion
 " longest - only insert the longest common text of the matches
 set number " print the line number in front of each line
-set clipboard=unnamedplus " will use the clipboard register '*' for all yank
-" set clipboard=unnamed,unnamedplus " will use the clipboard register '*' for all yank
+set clipboard+=unnamedplus " will use the clipboard register '*' for all yank
 set t_vb= " visual bell off
 if exists('+belloff')
 set belloff=all
@@ -222,7 +223,14 @@ let g:NERDTreeIgnore = [
   \ '\.pyc$[[file]]',  
   \ '\.o$[[file]]', 
   \ ]
+let g:vaffle_ignore_files = [
+  \ '__pycache__$', 
+  \ '\.egg-info$',
+  \ '\.pyc$',  
+  \ '\.o$', 
+  \ ]
 let g:qf_mapping_ack_style = 1
+let g:vim_fakeclip_tmux_plus = 1
 
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
@@ -232,10 +240,14 @@ let g:airline_right_sep = ''
 let g:airline_detect_iminsert = 1
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#wordcount#enabled = 0
+let g:airline#extensions#keymap#enabled = 0
 
 let g:qfix_height = 10
 let g:XkbSwitchEnabled = 1
 let g:XkbSwitchIMappings = ['ru']
+
+let g:startify_change_to_dir = 0
+let g:startify_custom_header = []
 
 let g:vim_isort_map = ''
 let g:solarized_termcolors = 256
@@ -389,12 +401,12 @@ if $GREP_OPTIONS == ''
         \'
 endif
 let g:ackprg = 'ag --vimgrep --smart-case'
-" let g:ackprg = 'sift --git --column -n'
-" let g:grepper = {
-"     \ 'tools': ['ag', 'sift', 'git', 'grep'],
-"     \ 'open':  0,
-"     \ 'jump':  1,
-"     \ }
+let g:ackprg = 'sift --git --column -n'
+let g:grepper = {
+    \ 'tools': ['ag', 'sift', 'git', 'grep'],
+    \ 'open':  0,
+    \ 'jump':  1,
+    \ }
 " }}}
 " {{{ Autocommands
 augroup programming
@@ -429,7 +441,6 @@ augroup programming
   " autocmd FileType xml setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
   " autocmd FileType text setlocal wrap
   autocmd FileType help setlocal nonumber nocursorline
-  autocmd FileType text setlocal nonumber
 
   autocmd BufEnter *.sql,*.pck,*.pkb,*.pks,*.trg,*.prc,*.fnc,*.vw setlocal filetype=plsql
   autocmd FileType sql,plsql setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab ignorecase
@@ -548,6 +559,7 @@ nnoremap <leader>wo :only<cr>
 nnoremap <leader>wc :quit<cr>
 nnoremap <leader>w, <c-w>p
 nnoremap <leader>wt :ToggleTerminal<cr>
+nnoremap <leader>ww :Startify<cr>
 nnoremap <tab> <c-w>w
 
 " redraw screen
@@ -559,6 +571,7 @@ nnoremap <f1> :ToggleHelp<cr>
 " open current buffer in additional window
 nnoremap <f3> :ToggleWindowCopy<cr>
 nnoremap <f5> :NERDTreeToggle<cr>
+" nnoremap <f5> :Vaffle<cr>
 nnoremap <f8> :Neomake<cr>
 " show/hide gui menu
 nnoremap <f9> :ToggleMenu<cr>
