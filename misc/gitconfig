@@ -13,3 +13,5 @@
     tool = p4merge
 [difftool]
     prompt = false
+[mergetool]
+    prompt = false
