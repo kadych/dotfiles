@@ -20,8 +20,6 @@
         "system/backgroundrc": "~/.backgroundrc",
         "system/inputrc": "~/.inputrc",
         "system/tmux.conf": "~/.tmux.conf",
-        "system/tmux-light.conf": "~/.tmux-light.conf",
-        "system/tmux-dark.conf": "~/.tmux-dark.conf",
         "system/fzfrc": "~/.fzfrc",
         "system/yank.sh": "~/.yank.sh",
         "system/git-prompt.sh": "~/.git-prompt.sh",
