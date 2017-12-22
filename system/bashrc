@@ -55,8 +55,11 @@ exec_command ~/.functionrc
 exec_command ~/.fzfrc
 exec_command ~/.fzf.bash
 exec_command ~/.git-flow-completion.bash
+exec_command ~/.debrc
 
 ps1 $BACKGROUND
+
+[ -n "$DEBEMAIL" ] && git config --global user.email "${DEBEMAIL}"
 # background $BACKGROUND
 
 # export PYENV_ROOT="$HOME/.pyenv"
