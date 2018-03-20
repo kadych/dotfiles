@@ -3,7 +3,7 @@
     ui = auto
     grep = auto
 [user]
-    email = kdunaev@yandex-team.ru
+	email = kdunaev@yandex-team.ru
     name = Kirill Dunaev
 [push]
     default = matching
@@ -15,3 +15,5 @@
     prompt = false
 [mergetool]
     prompt = false
+[icdiff]
+    options = --highlight --line-numbers --color-map=line-numbers:cyan
