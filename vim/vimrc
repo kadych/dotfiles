@@ -14,8 +14,10 @@ Plug 'kien/ctrlp.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 " Plug 'benekastah/neomake'
 Plug 'majutsushi/tagbar'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
+Plug 'itchyny/lightline.vim'
+Plug 'itchyny/vim-gitbranch'
 Plug 'tpope/vim-commentary'
 " Plug 'tpope/vim-fugitive'
 " Plug 'tpope/vim-repeat'
@@ -216,6 +218,16 @@ let fileencoding = &enc
 let termencoding = &enc
 let python_highlight_all = 1
 let pascal_pascal = 1
+let g:lightline = {
+  \ 'colorscheme': 'xoria256',
+  \ 'active': {
+  \   'left': [ [ 'mode', 'paste' ],
+  \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+  \ },
+  \ 'component_function': {
+  \   'gitbranch': 'gitbranch#name'
+  \ },
+  \ }
 
 let g:NERDTreeIgnore = [
   \ '__pycache__$[[dir]]', 
@@ -441,7 +453,7 @@ augroup programming
 
   " autocmd FileType xml setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
   " autocmd FileType text setlocal wrap
-  autocmd FileType help setlocal nonumber nocursorline
+  " autocmd FileType help setlocal nonumber nocursorline
 
   autocmd BufEnter *.sql,*.pck,*.pkb,*.pks,*.trg,*.prc,*.fnc,*.vw setlocal filetype=plsql
   autocmd FileType sql,plsql setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab ignorecase

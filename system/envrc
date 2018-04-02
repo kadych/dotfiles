@@ -31,7 +31,7 @@ EDITOR=vim
 TZ=/usr/share/zoneinfo/Europe/Moscow
 NO_AT_BRIDGE=1
 # LC_ALL=
-PATH=$PATH:$M2_HOME/bin:$GOROOT/bin:$HOME/.local/bin
+PATH=$PATH:$M2_HOME/bin:$GOROOT/bin:$HOME/.local/bin:/opt/p4v/bin
 NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 export BACKGROUND M2_HOME GOROOT GOPATH EDITOR TZ NO_AT_BRIDGE LC_ALL TMPDIR PATH

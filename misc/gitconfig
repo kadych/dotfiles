@@ -17,3 +17,5 @@
     prompt = false
 [icdiff]
     options = --highlight --line-numbers --color-map=line-numbers:cyan
+[url "https://"]
+	insteadOf = git://
