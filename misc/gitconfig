@@ -6,7 +6,7 @@
 	email = kdunaev@yandex-team.ru
     name = Kirill Dunaev
 [push]
-    default = matching
+	default = current
 [diff]
     tool = p4merge
 [merge]

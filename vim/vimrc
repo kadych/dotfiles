@@ -14,12 +14,13 @@ Plug 'kien/ctrlp.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 " Plug 'benekastah/neomake'
 Plug 'majutsushi/tagbar'
-" Plug 'vim-airline/vim-airline'
-" Plug 'vim-airline/vim-airline-themes'
-Plug 'itchyny/lightline.vim'
-Plug 'itchyny/vim-gitbranch'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'enricobacis/vim-airline-clock'
+" Plug 'itchyny/lightline.vim'
+" Plug 'itchyny/vim-gitbranch'
 Plug 'tpope/vim-commentary'
-" Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 " Plug 'tpope/vim-repeat'
 " Plug 'xolox/vim-misc'
 " Plug 'xolox/vim-session'
@@ -253,6 +254,8 @@ let g:airline_detect_iminsert = 1
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#wordcount#enabled = 0
 let g:airline#extensions#keymap#enabled = 0
+let g:airline#extensions#tagbar#enabled = 0
+let g:airline_section_z = '%#__accent_bold#%3p%% %4l:%-2v%#__restore__#'
 
 let g:qfix_height = 10
 let g:XkbSwitchEnabled = 1
