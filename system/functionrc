@@ -21,7 +21,7 @@ nvim-session() {
 tmain() {
     tmux ls &>/dev/null
     if [ $? -eq 0 ]; then
-        tmux setenv -g BACKGROUND $BACKGROUND
+        tmux setenv -g background $background
         tmux source ~/.tmux.conf
     fi
     tmux new-session -A -s kdunaev-main
@@ -30,10 +30,10 @@ tmain() {
 treload() {
     tmux ls &>/dev/null
     if [ $? -eq 0 ]; then
-        tmux setenv -g BACKGROUND $BACKGROUND
+        tmux setenv -g background $background
         tmux source ~/.tmux.conf
-        tmux run source ~/.backgroundrc background $BACKGROUND
-        tmux run source ~/.promptrc ps1 $BACKGROUND
+        tmux run source ~/.backgroundrc background $background
+        tmux run source ~/.promptrc ps1 $background
     fi
 }
 

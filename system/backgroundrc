@@ -23,7 +23,7 @@ background_light() {
     echo -ne '\e]4;14;#00afaf\a'  # bold cyan
     echo -ne '\e]4;15;#ffffff\a'  # bold white
 
-    export BACKGROUND=light
+    export background=light
 }
 
 background_dark() {
@@ -48,7 +48,7 @@ background_dark() {
     echo -ne '\e]4;14;#afafd7\a'  # bold cyan
     echo -ne '\e]4;15;#ffffff\a'  # bold white
 
-    export BACKGROUND=dark
+    export background=dark
 }
 
 background() {

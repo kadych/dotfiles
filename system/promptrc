@@ -54,7 +54,7 @@ ps1() {
 }
 
 if [ "$color_prompt" = yes ]; then
-    PROMPT_COMMAND="ps1 $BACKGROUND"
+    PROMPT_COMMAND="ps1 $background"
 else
     PROMPT_COMMAND=ps1_nocolor
 fi

@@ -135,14 +135,14 @@ endif
 "   endif
 " endif
 
-let $BACKGROUND = $BACKGROUND != '' ? $BACKGROUND : 'dark'
-let &background=$BACKGROUND
+let $background = $background != '' ? $background : 'dark'
+let &background=$background
 let g:background = {
   \ 'light': 'solarized',
   \ 'dark': 'xoria256',
   \ }
 " \ 'dark': 'solarized',
-let g:colorscheme = g:background[$BACKGROUND]
+let g:colorscheme = g:background[$background]
 
 try
   execute 'colorscheme '.g:colorscheme
