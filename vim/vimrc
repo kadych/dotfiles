@@ -36,6 +36,7 @@ Plug 'craigemery/vim-autotag'
 " Plug 'sheerun/vim-polyglot'
 " Plug 'cocopon/vaffle.vim'
 " Plug 'mhinz/vim-startify'
+Plug 'altercation/vim-colors-solarized'
 call plug#end()
 filetype plugin indent on
 " }}}
@@ -95,27 +96,27 @@ set printoptions=number:y,syntax:n " recognize the format of the output of ':har
 set ttimeoutlen=50 " time in milliseconds that is waited for a key code or mapped key sequence to complete
 set cursorline " show cursor line
 set mouse=a " enable the use of the mouse
-if exists('+termguicolors')
-set termguicolors
-endif
+" if exists('+termguicolors')
+" set termguicolors
+" endif
 set hlsearch
 set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
 
-if has('unix') && !has('nvim')
-  set ttymouse=xterm2
-endif
+" if has('unix') && !has('nvim')
+"   set ttymouse=xterm2
+" endif
 
-if !exists('g:loaded_vimrc') && has('gui_running')
-  set encoding=utf-8 " sets the character encoding used inside vim
-  " winpos 0 0 " put the gui vim window at the given coordinates
-  " set lines=35 " number of lines of the vim window
-  " set columns=85 " number of columns of the screen
-  " set hlsearch " when there is a previous search pattern, highlight all its matches
-endif
+" if !exists('g:loaded_vimrc') && has('gui_running')
+"   set encoding=utf-8 " sets the character encoding used inside vim
+"   " winpos 0 0 " put the gui vim window at the given coordinates
+"   " set lines=35 " number of lines of the vim window
+"   " set columns=85 " number of columns of the screen
+"   " set hlsearch " when there is a previous search pattern, highlight all its matches
+" endif
 
 syntax on " switches on syntax highlighting
 
-" compiler! maven
+" " compiler! maven
 if exists('+undodir')
   set undodir=~/.undo " list of directory names for undo files
 endif
@@ -124,64 +125,24 @@ if exists('+undofile')
   set undofile " saves undo history to an undo file when writing a buffer to a file
 endif
 
-if has("gui_running")
-  if has("win32")
-    set guifont=Consolas:h11:cRUSSIAN
-    set printfont=Consolas:h10:cRUSSIAN
-  elseif has("unix")
-    set guifont=Liberation\ Mono\ 10
-    set printfont=Liberation\ Mono\ 9
-  endif
-endif
-
-" if has('gui_running') || has('unix')
-"   let g:colorscheme = 'xoria256'
-" else
-"   let g:colorscheme = 'elflord'
+" if has("gui_running")
+"   if has("win32")
+"     set guifont=Consolas:h11:cRUSSIAN
+"     set printfont=Consolas:h10:cRUSSIAN
+"   elseif has("unix")
+"     set guifont=Liberation\ Mono\ 10
+"     set printfont=Liberation\ Mono\ 9
+"   endif
 " endif
 
 let $BACKGROUND = $BACKGROUND != '' ? $BACKGROUND : 'dark'
+let &background=$BACKGROUND
 let g:background = {
-  \ 'light': 'turquoise',
+  \ 'light': 'solarized',
   \ 'dark': 'xoria256',
   \ }
+" \ 'dark': 'solarized',
 let g:colorscheme = g:background[$BACKGROUND]
-
-if $BACKGROUND == 'light'
-  let g:terminal_color_0  = '#000000'  " black
-  let g:terminal_color_1  = '#af0000'  " red
-  let g:terminal_color_2  = '#00af00'  " green
-  let g:terminal_color_3  = '#afaf00'  " yellow
-  let g:terminal_color_4  = '#0000af'  " blue
-  let g:terminal_color_5  = '#af00af'  " magenta
-  let g:terminal_color_6  = '#00afaf'  " cyan
-  let g:terminal_color_7  = '#afafaf'  " white (light grey really)
-  let g:terminal_color_8  = '#404040'  " bold black (i.e. dark grey)
-  let g:terminal_color_9  = '#af0000'  " bold red
-  let g:terminal_color_10 = '#00af00'  " bold green
-  let g:terminal_color_11 = '#afaf00'  " bold yellow
-  let g:terminal_color_12 = '#0000af'  " bold blue
-  let g:terminal_color_13 = '#af00af'  " bold magenta
-  let g:terminal_color_14 = '#00afaf'  " bold cyan
-  let g:terminal_color_15 = '#ffffff'  " bold white
-elseif $BACKGROUND == 'dark'
-  let g:terminal_color_0  = '#121212'  " black
-  let g:terminal_color_1  = '#d78787'  " red
-  let g:terminal_color_2  = '#afd787'  " green
-  let g:terminal_color_3  = '#ffffaf'  " yellow
-  let g:terminal_color_4  = '#87afd7'  " blue
-  let g:terminal_color_5  = '#875f87'  " magenta
-  let g:terminal_color_6  = '#afafd7'  " cyan
-  let g:terminal_color_7  = '#d0d0d0'  " white (light grey really)
-  let g:terminal_color_8  = '#000000'  " bold black (i.e. dark grey)
-  let g:terminal_color_9  = '#d78787'  " bold red
-  let g:terminal_color_10 = '#87d7af'  " bold green
-  let g:terminal_color_11 = '#ffffaf'  " bold yellow
-  let g:terminal_color_12 = '#87afd7'  " bold blue
-  let g:terminal_color_13 = '#875f87'  " bold magenta
-  let g:terminal_color_14 = '#afafd7'  " bold cyan
-  let g:terminal_color_15 = '#ffffff'  " bold white
-endif
 
 try
   execute 'colorscheme '.g:colorscheme
@@ -189,27 +150,27 @@ catch /Vim/
   echomsg v:exception
 endtry
 
-if has('unix') && !has('nvim')
-  execute 'set <m-j>=\ej'
-  execute 'set <m-k>=\ek'
-endif
+"if has('unix') && !has('nvim')
+"  execute 'set <m-j>=\ej'
+"  execute 'set <m-k>=\ek'
+"endif
 
-" cursor shape in insert/normal mode
-if !has('nvim') && !has('gui_running')
-  if exists('$TMUX')
-    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-    if exists('+t_SR')
-      let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
-    endif
-    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-  else
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    if exists('+t_SR')
-      let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-    endif
-    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-  endif
-endif
+"" cursor shape in insert/normal mode
+"if !has('nvim') && !has('gui_running')
+"  if exists('$TMUX')
+"    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+"    if exists('+t_SR')
+"      let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+"    endif
+"    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+"  else
+"    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+"    if exists('+t_SR')
+"      let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+"    endif
+"    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+"  endif
+"endif
 
 " }}}
 " {{{ Plugin Variables
@@ -265,7 +226,7 @@ let g:startify_change_to_dir = 0
 let g:startify_custom_header = []
 
 let g:vim_isort_map = ''
-let g:solarized_termcolors = 256
+"let g:solarized_termcolors = 256
 
 let g:session_autoload = 'no'
 let g:session_autosave = 'yes'
@@ -392,15 +353,7 @@ if has("win32")
   let g:path_separator = ';'
 endif
 
-if has('win32')
-  let g:virtualenv_directory = 'D:/projects'
-endif
-
 " let g:neocomplete#enable_at_startup = 1
-
-if has('win32')
-  let $PATH = $PATH.';D:/tools/git/cmd'
-endif
 
 if $GREP_OPTIONS == ''
   let $GREP_OPTIONS = '
