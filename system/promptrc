@@ -31,15 +31,15 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 ps1_light() {
-    PS1="\[\e[0;34m\]\u@\h\[\e[0;33m\]:\[\e[0;32m\]\w\[\e[0;33m\]$(__git_ps1)\n\$\[\e[0;0m\] "
+    PS1="\[\e[0;34m\]\u@\h\[\e[0;33m\]:\[\e[0;32m\]\w\[\e[0;33m\]$(__git_svn_ps1)\n\$\[\e[0;0m\] "
 }
 
 ps1_dark() {
-    PS1="\[\e[0;34m\]\u@\h\[\e[0;33m\]:\[\e[0;32m\]\w\[\e[0;33m\]$(__git_ps1)\n\$\[\e[0;0m\] "
+    PS1="\[\e[0;34m\]\u@\h\[\e[0;33m\]:\[\e[0;32m\]\w\[\e[0;33m\]$(__git_svn_ps1)\n\$\[\e[0;0m\] "
 }
 
 ps1_nocolor() {
-    PS1="\u@\h:\w$(__git_ps1)\n\$ "
+    PS1="\u@\h:\w$(__git_svn_ps1)\n\$ "
 }
 
 ps1() {

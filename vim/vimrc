@@ -8,6 +8,7 @@ filetype off
 call plug#begin(g:plugin_bundle)
 Plug 'mileszs/ack.vim'
 " Plug 'Numkil/ag.nvim'
+" Plug 'kalafut/vim-sift'
 " Plug 'romainl/vim-qf'
 Plug 'kien/ctrlp.vim'
 " Plug 'scrooloose/syntastic'
@@ -203,6 +204,9 @@ let g:vaffle_ignore_files = [
   \ '\.pyc$',  
   \ '\.o$', 
   \ ]
+let g:ctrlp_custom_ignore = {
+  \ 'file': '\v\.(pyc|patch)$',
+  \ }
 let g:qf_mapping_ack_style = 1
 let g:vim_fakeclip_tmux_plus = 1
 
@@ -368,7 +372,7 @@ if $GREP_OPTIONS == ''
         \ --exclude=tags
         \'
 endif
-let g:ackprg = 'ag --vimgrep --smart-case'
+" let g:ackprg = 'ag --vimgrep --smart-case'
 let g:ackprg = 'sift --git --column -n'
 let g:grepper = {
     \ 'tools': ['ag', 'sift', 'git', 'grep'],
@@ -475,7 +479,7 @@ nnoremap <leader>vu :UltiSnipsEdit<cr>
 " execute .vimrc file
 nnoremap <leader>vs :source $MYVIMRC<cr>
 " ag search
-nnoremap <leader>/ :<c-u>Ack "\b<c-r><c-w>\b" 
+nnoremap <leader>/ :<c-u>Ack <c-r><c-w> 
 " disable ex mode
 nnoremap Q <nop>
 " goto begin of current line
